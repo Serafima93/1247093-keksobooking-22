@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Serafima Mokrousova](https://up.htmlacademy.ru/javascript/22/user/1247093).
-* Наставник: `Неизвестно`.
+* Наставник: [Denis Baydarov](https://htmlacademy.ru/profile/4er).
 
 ---
 
