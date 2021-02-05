@@ -22,20 +22,31 @@ const getRandomArbitrary = function (min, max, n) {
   }
   return randomNumber
 }
+
+
 const OFFER = {
   title: 'Пример',
   features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
   description: 'Описание помещения',
   photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
-  checkin: '12: 00' || '13: 00' || '14: 00',
-  checkout: '12: 00' || '13: 00' || '14: 00',
-  type: 'palace' || 'flat' || 'house' || 'bungalow',
+  checkin: '12: 00,13: 00,14: 00',
+  checkout: '12: 00,13: 00,14: 00',
+  type: 'palace,flat,house,bungalow',
 };
+
+// Создание финального счетчика объявлений
 const SIMILAR_ADVERT_COUNT = 10;
 
+// Преобразование строчек в массив
+let comma = ',';
+
+// Создание рандомного эллемента массива
 const getRandomArrayElement = (elements) => {
   return elements[getRandomIntInclusive(0, elements.length - 1)];
 };
+
+
+
 
 
 
@@ -61,14 +72,14 @@ const createAdvertDescription = () => {
   return {
     title: OFFER.title,
     price: getRandomIntInclusive(0, 100),
-    features: getRandomArrayElement(OFFER.features), //Значения не должны повторяться  массив случайной длины
+    features: OFFER.features.slice(getRandomIntInclusive(0, OFFER.features.length-1)),
     description: OFFER.description,
     photos: getRandomArrayElement(OFFER.photos),
     rooms: getRandomIntInclusive(1, 10),
     guests: getRandomIntInclusive(1, 8),
-    checkin: OFFER.checkin, //как перебирать строки? создать массив или что?
-    checkout: OFFER.checkout,
-    type: OFFER.type,
+    checkin: getRandomArrayElement(OFFER.checkin.split(comma)),
+    checkout: getRandomArrayElement(OFFER.checkout.split(comma)),
+    type: getRandomArrayElement(OFFER.type.split(comma)),
     location: createLocation(),
   };
 };
@@ -85,8 +96,6 @@ const createAdvert = () => {
 createAdvert();
 
 //создание массива объявлений
-
 const randomAdvert = new Array(SIMILAR_ADVERT_COUNT).fill(null).map(() => createAdvert());
-randomAdvert
+randomAdvert;
 
-//Глобальная функция с ретерном?
