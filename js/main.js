@@ -49,54 +49,40 @@ const getRandomArbitrary = function (min, max, n) {
   return randomNumber
 }
 
-
-
-
 // Создание рандомного эллемента массива
 const getRandomArrayElement = (elements) => {
   return elements[getRandomIntInclusive(0, elements.length - 1)];
 };
 
 
-// создание локации.
-const createLocation = () => {
-  return {
-    x: getRandomArbitrary(RANDOM_X_FIRST, RANDOM_X_SECOND, FLOW_POINT),
-    y: getRandomArbitrary(RANDOM_Y_FIRST, RANDOM_Y_SECOND, FLOW_POINT),
-  };
-};
-
-
-// создание автора
-const createAuthor = () => {
-  return {
-    avatar: 'img/avatars/user' + 0 + getRandomIntInclusive(AUTHOR_FIRST, AUTHOR_SECOND) + '.png',
-  };
-};
-
-// создание рекламного текста
-const createAdvertDescription = () => {
-  return {
-    title: getRandomArrayElement(OFFER.title),
-    price: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
-    features: OFFER.features.slice(getRandomIntInclusive(0, OFFER.features.length - 1)),
-    description: getRandomArrayElement(OFFER.description),
-    photos: getRandomArrayElement(OFFER.photos),
-    rooms: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
-    guests: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
-    checkin: getRandomArrayElement(OFFER.checkin),
-    checkout: getRandomArrayElement(OFFER.checkin),
-    type: getRandomArrayElement(OFFER.type),
-    adress: createLocation(),
-  };
-};
 
 // создание рекламного объявления
 const createAdvert = () => {
+  const X = getRandomArbitrary(RANDOM_X_FIRST, RANDOM_X_SECOND, FLOW_POINT);
+  const Y = getRandomArbitrary(RANDOM_Y_FIRST, RANDOM_Y_SECOND, FLOW_POINT);
+
   return {
-    author: createAuthor(),
-    offer: createAdvertDescription(),
-    location: createLocation(),
+    author: { avatar: 'img/avatars/user' + 0 + getRandomIntInclusive(AUTHOR_FIRST, AUTHOR_SECOND) + '.png' },
+    offer: {
+      title: getRandomArrayElement(OFFER.title),
+      price: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
+      features: OFFER.features.slice(getRandomIntInclusive(0, OFFER.features.length - 1)),
+      description: getRandomArrayElement(OFFER.description),
+      photos: getRandomArrayElement(OFFER.photos),
+      rooms: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
+      guests: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
+      checkin: getRandomArrayElement(OFFER.checkin),
+      checkout: getRandomArrayElement(OFFER.checkin),
+      type: getRandomArrayElement(OFFER.type),
+      address: {
+        x: X,
+        y: Y,
+      },
+    },
+    location: {
+      x: X,
+      y: Y,
+    },
   };
 };
 
