@@ -1,3 +1,29 @@
+const SIMILAR_ADVERT_COUNT = 10;
+
+// константы локации
+const RANDOM_X_FIRST = 35.65000;
+const RANDOM_X_SECOND = 35.70000;
+const FLOW_POINT = 5;
+const RANDOM_Y_FIRST = 139.70000;
+const RANDOM_Y_SECOND = 139.80000;
+
+// константы автора
+const AUTHOR_FIRST = 1;
+const AUTHOR_SECOND = 8;
+
+//Константы объявления. Я сделала одну для всех. Если не подходит можно добавить для кажого. В задание просто не указано сколько должно быть минимум и максимум
+const MIN_NUMBER = 1;
+const MAX_NUMBER = 10;
+
+const OFFER = {
+  title: ['Город Вызима', 'Химринг', 'Аббатсво В.Баскервильского'],
+  features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
+  description: ['– Хорошо, хорошо. Не будешь княгиней. Станешь хомячком и будешь жить в норке.', 'Если бы больше людей ценили свой дом превыше золота, мир был бы лучше', 'Существует аббатство дневное и аббатство ночное. И ночное, как это ни прискорбно, намного интереснее'],
+  photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
+  checkin: ['12: 00', '13: 00', '14: 00'],
+  type: ['palace', 'flat', 'house', 'bungalow'],
+};
+
 const getRandomIntInclusive = function (min, max) {
   let randomNumber
 
@@ -24,21 +50,7 @@ const getRandomArbitrary = function (min, max, n) {
 }
 
 
-const OFFER = {
-  title: 'Пример',
-  features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-  description: 'Описание помещения',
-  photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
-  checkin: '12: 00,13: 00,14: 00',
-  checkout: '12: 00,13: 00,14: 00',
-  type: 'palace,flat,house,bungalow',
-};
 
-// Создание финального счетчика объявлений
-const SIMILAR_ADVERT_COUNT = 10;
-
-// Преобразование строчек в массив
-let comma = ',';
 
 // Создание рандомного эллемента массива
 const getRandomArrayElement = (elements) => {
@@ -46,44 +58,38 @@ const getRandomArrayElement = (elements) => {
 };
 
 
-
-
-
-
-// создание локации
+// создание локации.
 const createLocation = () => {
   return {
-    x: getRandomArbitrary(35.65000, 35.70000, 5),
-    y: getRandomArbitrary(139.70000, 139.80000, 5),
+    x: getRandomArbitrary(RANDOM_X_FIRST, RANDOM_X_SECOND, FLOW_POINT),
+    y: getRandomArbitrary(RANDOM_Y_FIRST, RANDOM_Y_SECOND, FLOW_POINT),
   };
 };
-createLocation();
+
 
 // создание автора
 const createAuthor = () => {
   return {
-    avatar: 'img/avatars/user' + 0 + getRandomIntInclusive(1, 8) + '.png',
+    avatar: 'img/avatars/user' + 0 + getRandomIntInclusive(AUTHOR_FIRST, AUTHOR_SECOND) + '.png',
   };
 };
-createAuthor();
 
 // создание рекламного текста
 const createAdvertDescription = () => {
   return {
-    title: OFFER.title,
-    price: getRandomIntInclusive(0, 100),
-    features: OFFER.features.slice(getRandomIntInclusive(0, OFFER.features.length-1)),
-    description: OFFER.description,
+    title: getRandomArrayElement(OFFER.title),
+    price: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
+    features: OFFER.features.slice(getRandomIntInclusive(0, OFFER.features.length - 1)),
+    description: getRandomArrayElement(OFFER.description),
     photos: getRandomArrayElement(OFFER.photos),
-    rooms: getRandomIntInclusive(1, 10),
-    guests: getRandomIntInclusive(1, 8),
-    checkin: getRandomArrayElement(OFFER.checkin.split(comma)),
-    checkout: getRandomArrayElement(OFFER.checkout.split(comma)),
-    type: getRandomArrayElement(OFFER.type.split(comma)),
-    location: createLocation(),
+    rooms: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
+    guests: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
+    checkin: getRandomArrayElement(OFFER.checkin),
+    checkout: getRandomArrayElement(OFFER.checkin),
+    type: getRandomArrayElement(OFFER.type),
+    adress: createLocation(),
   };
 };
-createAdvertDescription();
 
 // создание рекламного объявления
 const createAdvert = () => {
@@ -93,9 +99,10 @@ const createAdvert = () => {
     location: createLocation(),
   };
 };
-createAdvert();
 
 //создание массива объявлений
 const randomAdvert = new Array(SIMILAR_ADVERT_COUNT).fill(null).map(() => createAdvert());
 randomAdvert;
 
+//Eslint требует чтобы функция хоть где-то использовалась.
+// Пр. - randomAdvert' is assigned a value but never used
