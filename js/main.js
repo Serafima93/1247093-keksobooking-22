@@ -1,6 +1,5 @@
-import { randomAdvert } from './data.js';
-randomAdvert;
+//import { randomAdvert } from './data.js';
+//randomAdvert;
 
 
-// Я сделала импорт только одного файла. Так как разделила функции и объект в два файла.
-// Сначала объект вызвает их, а потом уже собранный файл идет сюда.
+import './card.js';

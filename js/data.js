@@ -1,6 +1,6 @@
 import { getRandomIntInclusive, getRandomArbitrary, getRandomArrayElement } from './utils.js';
 
-const SIMILAR_ADVERT_COUNT = 10;
+const SIMILAR_ADVERT_COUNT = 5;
 
 // константы локации
 const RANDOM_X_FIRST = 35.65000;
@@ -23,9 +23,15 @@ const OFFER = {
   description: ['– Хорошо, хорошо. Не будешь княгиней. Станешь хомячком и будешь жить в норке.', 'Если бы больше людей ценили свой дом превыше золота, мир был бы лучше', 'Существует аббатство дневное и аббатство ночное. И ночное, как это ни прискорбно, намного интереснее'],
   photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
   checkin: ['12: 00', '13: 00', '14: 00'],
-  type: ['palace', 'flat', 'house', 'bungalow'],
 };
 
+// Создание соотношея ключ-значение
+const PROPERTYTYPE = {
+  'palace': 'Дворец',
+  'flat': 'Квартира',
+  'house': 'Дом',
+  'bungalo': 'Бунгало',
+}
 
 
 // создание рекламного объявления
@@ -45,7 +51,7 @@ const createAdvert = () => {
       guests: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
       checkin: getRandomArrayElement(OFFER.checkin),
       checkout: getRandomArrayElement(OFFER.checkin),
-      type: getRandomArrayElement(OFFER.type),
+      type: getRandomArrayElement(Object.values(PROPERTYTYPE)),
       address: {
         x: X,
         y: Y,
