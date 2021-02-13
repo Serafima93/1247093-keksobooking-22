@@ -18,7 +18,9 @@ similarCards.forEach((offer) => {
   cardElement.querySelector('.popup__type').textContent = offer.offer.type;
   cardElement.querySelector('.popup__text--capacity').textContent = offer.offer.rooms + ' комнаты для ' + offer.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.offer.checkin + ', выезд до ' + offer.offer.checkout;
-  cardElement.querySelector('.popup__features').textContent = offer.offer.features; //- картинка?
+  cardElement.querySelector('.popup__features').appendChild(document.createElement('b')).textContent = offer.offer.features; //- картинка?
+  // НЕ уверена что поняла правильно этот кусок, ибо тут фаф иконка и как то генерировать картинка+ текст странно
+
   cardElement.querySelector('.popup__description').textContent = offer.offer.description;
   let ParentElemet = cardElement.querySelector('.popup__photos').children
   ParentElemet[0].src = offer.offer.photos;
