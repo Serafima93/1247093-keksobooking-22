@@ -1,4 +1,4 @@
-import { randomAdvert } from './data.js';
+import { createAdvert } from './data.js';
 
 
 const cardList = document.querySelector('#map-canvas');
@@ -8,56 +8,101 @@ const templateFragment = document.querySelector('#card')
   .querySelector('article'); // В фрагменте находим нужный элемент
 
 
-const similarCards = randomAdvert;
+
+// Функция создания рандомного колличества карточек
+const randomCard = new Array(1).fill(null).map(() => createAdvert());
+const similarCards = randomCard;
+
+
+
+
 
 similarCards.forEach((offer) => {
   const cardElement = templateFragment.cloneNode(true);
-  cardElement.querySelector('.popup__title').textContent = offer.offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = offer.offer.address.x + ' это X ' + offer.offer.address.y + ' это Y';
-  cardElement.querySelector('.popup__text--price').textContent = offer.offer.price + ' ₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = offer.offer.type;
-  cardElement.querySelector('.popup__text--capacity').textContent = offer.offer.rooms + ' комнаты для ' + offer.offer.guests + ' гостей';
-  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.offer.checkin + ', выезд до ' + offer.offer.checkout;
-  cardElement.querySelector('.popup__features').appendChild(document.createElement('b')).textContent = offer.offer.features; //- картинка?
-  // НЕ уверена что поняла правильно этот кусок, ибо тут фаф иконка и как то генерировать картинка+ текст странно
 
-  cardElement.querySelector('.popup__description').textContent = offer.offer.description;
-  let ParentElemet = cardElement.querySelector('.popup__photos').children
-  ParentElemet[0].src = offer.offer.photos;
-
-  cardElement.querySelector('.popup__avatar').src = offer.author.avatar;
-
-  // Я понимаю что можно это как то сократить, но не догоняю как...
+  let titlePopup = cardElement.querySelector('.popup__title');
+  titlePopup.textContent = offer.offer.title;
   if (offer.offer.title === undefined) {
-    cardElement.querySelector('.popup__title').classList.remove('.popup__title');
+    titlePopup.classList.remove();
   }
+
+  let adressPopup = cardElement.querySelector('.popup__text--address');
+  adressPopup.textContent = `${offer.offer.address.x} это X ${offer.offer.address.y} это Y`;
   if (offer.offer.address.x === undefined || offer.offer.address.y === undefined) {
-    cardElement.querySelector('.popup__text--address').classList.remove('.popup__text--address');
+    adressPopup.classList.remove();
   }
+
+  let pricePopup = cardElement.querySelector('.popup__text--price');
+  pricePopup.textContent = `${offer.offer.price} ₽/ночь`;
   if (offer.offer.price === undefined) {
-    cardElement.querySelector('.popup__text--price').classList.remove('.popup__text--price');
+    pricePopup.classList.remove();
   }
+
+  let typePopup = cardElement.querySelector('.popup__type');
+  typePopup.textContent = offer.offer.type;
   if (offer.offer.type === undefined) {
-    cardElement.querySelector('.popup__type').classList.remove('.popup__type');
+    typePopup.classList.remove();
   }
+
+  let capacityPopup = cardElement.querySelector('.popup__text--capacity');
+  capacityPopup.textContent = `${offer.offer.rooms} комнаты для ${offer.offer.guests} гостей`;
   if (offer.offer.rooms === undefined || offer.offer.guests === undefined) {
-    cardElement.querySelector('.popup__text--capacity').classList.remove('.popup__text--capacity');
+    capacityPopup.classList.remove();
   }
+
+  let timePopup = cardElement.querySelector('.popup__text--time');
+  timePopup.textContent = `Заезд после ${offer.offer.checkin}  выезд до ${offer.offer.checkout}`;
   if (offer.offer.checkin === undefined || offer.offer.checkout === undefined) {
-    cardElement.querySelector('.popup__text--time').classList.remove('.popup__text--time');
+    timePopup.classList.remove();
   }
+
+
+
+  let featuresPopup = cardElement.querySelector('.popup__features');// ищем родительскй элемент
+  featuresPopup.innerHTML = ''; //очищаем его
+  let featuresArray = offer.offer.features; //ищем массив данных
+
+  for (let i = 0; i <= featuresArray.length - 1; i++) {
+    let ad = featuresArray[i];
+
+    let newElement = document.createElement('li'); // создаем новый элемент
+    newElement.classList.add('popup__feature'); //добавляем ему класс первый
+    newElement.classList.add('popup__feature--'+ad); //добавляем ему класс первый
+
+    featuresPopup.append(newElement); // добавляем его в список
+
+
+
+  }
+
+
+
+
   if (offer.offer.features === undefined) {
-    cardElement.querySelector('.popup__feature').classList.remove('.popup__feature');
+    featuresPopup.classList.remove();
   }
+
+
+  let descriptionPopup = cardElement.querySelector('.popup__description');
+  descriptionPopup.textContent = offer.offer.description;
   if (offer.offer.description === undefined) {
-    cardElement.querySelector('.popup__description').classList.remove('.popup__description');
+    descriptionPopup.classList.remove();
   }
+
+  let photosPopup = cardElement.querySelector('.popup__photos');
+  let parentElemet = photosPopup.children
+  parentElemet[0].src = offer.offer.photos;
   if (offer.offer.photos === undefined) {
-    cardElement.querySelector('.popup__photos').classList.remove('.popup__photos');
+    photosPopup.classList.remove();
   }
+
+  let avatarPopup = cardElement.querySelector('.popup__avatar');
+  avatarPopup.src = offer.author.avatar;
   if (offer.author.avatar === undefined) {
-    cardElement.querySelector('.popup__avatar').classList.remove('.popup__avatar');
+    avatarPopup.classList.remove();
   }
   cardList.appendChild(cardElement);
 });
+
+
 

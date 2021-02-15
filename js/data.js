@@ -1,6 +1,6 @@
 import { getRandomIntInclusive, getRandomArbitrary, getRandomArrayElement } from './utils.js';
 
-const SIMILAR_ADVERT_COUNT = 5;
+const SIMILAR_ADVERT_COUNT = 10;
 
 // константы локации
 const RANDOM_X_FIRST = 35.65000;
@@ -68,4 +68,4 @@ const createAdvert = () => {
 const randomAdvert = new Array(SIMILAR_ADVERT_COUNT).fill(null).map(() => createAdvert());
 randomAdvert;
 
-export { randomAdvert };
+export { randomAdvert, createAdvert };
