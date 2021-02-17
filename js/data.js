@@ -1,6 +1,6 @@
 import { getRandomIntInclusive, getRandomArbitrary, getRandomArrayElement } from './utils.js';
 
-const SIMILAR_ADVERT_COUNT = 10;
+const SIMILAR_ADVERT_COUNT = 4;
 
 // константы локации
 const RANDOM_X_FIRST = 35.65000;
@@ -26,7 +26,7 @@ const OFFER = {
 };
 
 // Создание соотношея ключ-значение
-const PROPERTYTYPE = {
+const PROPERTY_TYPE = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
@@ -51,7 +51,7 @@ const createAdvert = () => {
       guests: getRandomIntInclusive(MIN_NUMBER, MAX_NUMBER),
       checkin: getRandomArrayElement(OFFER.checkin),
       checkout: getRandomArrayElement(OFFER.checkin),
-      type: getRandomArrayElement(Object.values(PROPERTYTYPE)),
+      type: getRandomArrayElement(Object.values(PROPERTY_TYPE)),
       address: {
         x: X,
         y: Y,
@@ -64,8 +64,10 @@ const createAdvert = () => {
   };
 };
 
-//создание массива объявлений
-const randomAdvert = new Array(SIMILAR_ADVERT_COUNT).fill(null).map(() => createAdvert());
-randomAdvert;
 
-export { randomAdvert, createAdvert };
+//создание массива объявлений
+
+const randomAdvert = new Array(SIMILAR_ADVERT_COUNT).fill(null).map(() => createAdvert());
+
+
+export { randomAdvert };
