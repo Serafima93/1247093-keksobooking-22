@@ -1,4 +1,8 @@
-import { randomAdvert } from './data.js';
+
+//Я не хочу удалять этот код, уверена он потом понадобится. Просто закоменчу пока
+
+
+/*import { randomAdvert } from './data.js';
 
 
 const cardList = document.querySelector('#map-canvas');
@@ -107,5 +111,5 @@ const createPopup = (offer) => {
   return cardElement;
 };
 
-cardList.appendChild(createPopup(renderCards[0]));
+cardList.appendChild(createPopup(renderCards[0]));*/
 
