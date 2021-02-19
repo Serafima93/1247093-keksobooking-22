@@ -1,6 +1,6 @@
 import { getRandomIntInclusive, getRandomArbitrary, getRandomArrayElement } from './utils.js';
 
-const SIMILAR_ADVERT_COUNT = 4;
+const SIMILAR_ADVERT_COUNT = 10;
 
 // константы локации
 const RANDOM_X_FIRST = 35.65000;
@@ -36,8 +36,8 @@ const PROPERTY_TYPE = {
 
 // создание рекламного объявления
 const createAdvert = () => {
-  const X = getRandomArbitrary(RANDOM_X_FIRST, RANDOM_X_SECOND, FLOW_POINT);
-  const Y = getRandomArbitrary(RANDOM_Y_FIRST, RANDOM_Y_SECOND, FLOW_POINT);
+  const LAT = getRandomArbitrary(RANDOM_X_FIRST, RANDOM_X_SECOND, FLOW_POINT);
+  const LNG = getRandomArbitrary(RANDOM_Y_FIRST, RANDOM_Y_SECOND, FLOW_POINT);
 
   return {
     author: { avatar: 'img/avatars/user' + 0 + getRandomIntInclusive(AUTHOR_FIRST, AUTHOR_SECOND) + '.png' },
@@ -53,13 +53,13 @@ const createAdvert = () => {
       checkout: getRandomArrayElement(OFFER.checkin),
       type: getRandomArrayElement(Object.values(PROPERTY_TYPE)),
       address: {
-        x: X,
-        y: Y,
+        lat: LAT,
+        lng: LNG,
       },
     },
     location: {
-      x: X,
-      y: Y,
+      lat: LAT,
+      lng: LNG,
     },
   };
 };

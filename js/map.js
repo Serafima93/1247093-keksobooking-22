@@ -1,4 +1,7 @@
 /* global L:readonly */
+
+import { createPopup, renderCards } from './card.js';
+
 // находим форму и добавляем неактивность
 
 const userForm = document.querySelector('.ad-form');
@@ -42,7 +45,7 @@ const map = L.map('map')
     });
 
   })
-  .setView([35.40, 139.35], 13);
+  .setView([35.65, 139.78], 12);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -58,19 +61,11 @@ const mainPinIcon = L.icon({
   iconAnchor: [26, 52],
 });
 
-const mainPinIconUsual = L.icon({
-  iconUrl: '../img/pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
-});
-
-
-
 
 const marker = L.marker(
   {
-    lat: 35.41,
-    lng: 139.34,
+    lat: 35.65,
+    lng: 139.78,
   },
   {
     draggable: true,
@@ -81,21 +76,39 @@ marker.addTo(map);
 
 
 
-const markerUsual = L.marker(
-  {
-    lat: 35.42,
-    lng: 139.33,
-  },
-  {
-    icon: mainPinIconUsual,
-  },
-);
-markerUsual
-  .addTo(map)
-  .bindPopup('Пример');
 
 
-// начало адреса. Кстати он написан с ошибкой в коде изначально
+renderCards.forEach((offer) => {
+
+  const iconUsual = L.icon({
+    iconUrl: '../img/pin.svg',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+  });
+
+  const markerUsual = L.marker(
+    {
+      lat: offer.offer.address.lat,
+      lng: offer.offer.address.lng,
+    },
+    {
+      iconUsual,
+    },
+  );
+
+  markerUsual
+    .addTo(map)
+    .bindPopup(
+      createPopup(offer),
+    );
+});
+
+
+
+
+
+
+// начало адреса.
 
 
 const adressCordinate = document.querySelector('#address');
