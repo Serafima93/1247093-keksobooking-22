@@ -1,7 +1,11 @@
+
+//Я не хочу удалять этот код, уверена он потом понадобится. Просто закоменчу пока
+
+
 import { randomAdvert } from './data.js';
 
 
-const cardList = document.querySelector('#map-canvas');
+//const cardList = document.querySelector('#map-canvas');
 
 const templateFragment = document.querySelector('#card')
   .content // Находим фрагмент с содержимым темплейта
@@ -25,8 +29,8 @@ const createPopup = (offer) => {
   //адрес
 
   const adressPopup = cardElement.querySelector('.popup__text--address');
-  adressPopup.textContent = `${offer.offer.address.x} это X ${offer.offer.address.y} это Y`;
-  if (!offer.offer.address.x || !offer.offer.address.y) {
+  adressPopup.textContent = `${offer.offer.address.lat} это X ${offer.offer.address.lng} это Y`;
+  if (!offer.offer.address.lat || !offer.offer.address.lng) {
     adressPopup.remove();
   }
 
@@ -107,5 +111,6 @@ const createPopup = (offer) => {
   return cardElement;
 };
 
-cardList.appendChild(createPopup(renderCards[0]));
+export {createPopup, renderCards};
+//cardList.appendChild(createPopup(renderCards[0]));
 
