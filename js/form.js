@@ -1,30 +1,20 @@
-const BUNGALOW_MIN_PRICE = 0;
-const FLAT_MIN_PRICE = 1000;
-const HOUSE_MIN_PRICE = 5000;
-const PALACE_MIN_PRICE = 10000;
+const PROPERTY_MIN_PRICE =
+{
+  'bungalow': 0,
+  'flat': 1000,
+  'house': 5000,
+  'palace': 10000,
+};
+
 const prorertyType = document.querySelector('#type');
 const propertyPrice = document.querySelector('#price');
 
 
 prorertyType.addEventListener('change', (event) => {
 
-  if (event.target.value === 'bungalow') {
-    propertyPrice.placeholder = BUNGALOW_MIN_PRICE;
-    propertyPrice.min = BUNGALOW_MIN_PRICE;
-  }
-
-  if (event.target.value === 'flat') {
-    propertyPrice.placeholder = FLAT_MIN_PRICE;
-    propertyPrice.min = FLAT_MIN_PRICE;
-  }
-  if (event.target.value === 'house') {
-    propertyPrice.placeholder = HOUSE_MIN_PRICE;
-    propertyPrice.min = HOUSE_MIN_PRICE;
-  }
-  if (event.target.value === 'palace') {
-    propertyPrice.placeholder = PALACE_MIN_PRICE;
-    propertyPrice.min = PALACE_MIN_PRICE;
-  }
+  event.target.value === prorertyType.value;
+  propertyPrice.placeholder = PROPERTY_MIN_PRICE[prorertyType.value];
+  propertyPrice.min = PROPERTY_MIN_PRICE[prorertyType.value];
 
 });
 
@@ -32,15 +22,17 @@ prorertyType.addEventListener('change', (event) => {
 
 // Выбор времени регистрации
 
-const registrationTime = document.querySelector('.ad-form__element--time');
-const CheckIn = document.querySelector('#timein');
-const CheckOut = document.querySelector('#timeout');
+const checkIn = document.querySelector('#timein');
+const checkOut = document.querySelector('#timeout');
 
 const makeSameValue = function (first, second) {
   second.value = first.value;
 };
 
-registrationTime.addEventListener('change', () => {
-  makeSameValue(CheckIn, CheckOut);
+checkOut.addEventListener('change', () => {
+  makeSameValue(checkOut, checkIn);
 });
 
+checkIn.addEventListener('change', () => {
+  makeSameValue(checkIn, checkOut);
+});
