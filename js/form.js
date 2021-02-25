@@ -1,7 +1,3 @@
-import { showAlert } from './utils.js';
-
-
-
 const PROPERTY_MIN_PRICE =
 {
   'bungalow': 0,
@@ -106,8 +102,9 @@ const templateFormSuccess = document.querySelector('#success')
   .content // Находим фрагмент с содержимым темплейта
   .querySelector('div'); // В фрагменте находим нужный элемент
 
+templateFormSuccess;
 
-const errorButton = document.querySelector('.error__button');
+//const errorButton = document.querySelector('.error__button');
 
 const templateFormError = document.querySelector('#error')
   .content // Находим фрагмент с содержимым темплейта
