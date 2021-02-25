@@ -1,3 +1,5 @@
+const ALERT_SHOW_TIME = 10000;
+
 const getRandomIntInclusive = function (min, max) {
   let randomNumber
 
@@ -29,4 +31,25 @@ const getRandomArrayElement = (elements) => {
 };
 
 
-export { getRandomIntInclusive, getRandomArbitrary, getRandomArrayElement };
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = 1001;
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.left = 0;
+  alertContainer.style.top = '300px';
+  alertContainer.style.right = 0;
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '30px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = 'red';
+
+  alertContainer.textContent = message;
+
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+}
+
+export { getRandomIntInclusive, getRandomArbitrary, getRandomArrayElement, showAlert };

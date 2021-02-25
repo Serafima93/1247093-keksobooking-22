@@ -1,7 +1,3 @@
-
-//Я не хочу удалять этот код, уверена он потом понадобится. Просто закоменчу пока
-
-
 import { randomAdvert } from './data.js';
 
 
@@ -13,6 +9,7 @@ const templateFragment = document.querySelector('#card')
 
 const renderCards = randomAdvert;
 
+// делаю карточку по шаблону
 
 const createPopup = (offer) => {
 
@@ -107,10 +104,12 @@ const createPopup = (offer) => {
   if (!offer.author.avatar) {
     avatarPopup.remove();
   }
-
   return cardElement;
 };
 
+
 export {createPopup, renderCards};
+
+
 //cardList.appendChild(createPopup(renderCards[0]));
 

@@ -1,3 +1,7 @@
+import { showAlert } from './utils.js';
+
+
+
 const PROPERTY_MIN_PRICE =
 {
   'bungalow': 0,
@@ -94,3 +98,48 @@ roomNumber.addEventListener('change', (event) => {
 });
 
 
+// форма
+
+
+
+const templateFormSuccess = document.querySelector('#success')
+  .content // Находим фрагмент с содержимым темплейта
+  .querySelector('div'); // В фрагменте находим нужный элемент
+
+
+const errorButton = document.querySelector('.error__button');
+
+const templateFormError = document.querySelector('#error')
+  .content // Находим фрагмент с содержимым темплейта
+  .querySelector('div'); // В фрагменте находим нужный элемент
+
+
+const showAler = (message) => {
+  templateFormError.textContent = message;
+
+  document.body.append(templateFormError);
+
+  setTimeout(() => {
+    templateFormError.remove();
+  }, 10000);
+}
+
+
+const userForm = document.querySelector('.ad-form');
+
+userForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const formData = new FormData(evt.target);
+
+  fetch(
+    'https://22.javpt.pages.academy/keksobooking',
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
+    .catch(() => {
+      showAler();
+    });
+});
