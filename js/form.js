@@ -94,35 +94,78 @@ roomNumber.addEventListener('change', (event) => {
 });
 
 
-// форма
+// начао работы с формой
+
+const userForm = document.querySelector('.ad-form');
+const mainPart = document.querySelector('main');
 
 
+// поп-ап успешной отправки
 
 const templateFormSuccess = document.querySelector('#success')
-  .content // Находим фрагмент с содержимым темплейта
-  .querySelector('div'); // В фрагменте находим нужный элемент
+  .content
+  .querySelector('div');
 
-templateFormSuccess;
+const successMessage = () => {
+  const cardElement = templateFormSuccess.cloneNode(true);
 
-//const errorButton = document.querySelector('.error__button');
+  mainPart.append(cardElement);
+
+  document.addEventListener('keydown', () => {
+    if (isEscEvent) {
+      cardElement.remove();
+    }
+  });
+  document.addEventListener('click', () => {
+    cardElement.remove();
+  });
+}
+//successMessage();
+
+// сброс настроек в исходное состояние
+
+const resetButtonSuccess = document.querySelector('.ad-form__reset');
+
+resetButtonSuccess.addEventListener('click', () => {
+  userForm.reset();
+});
+
+
+
+
+// поп-ап ошибки
+
+const isEscEvent = (evt) => {
+  return evt.key === 'Escape' || evt.key === 'Esc';
+};
 
 const templateFormError = document.querySelector('#error')
-  .content // Находим фрагмент с содержимым темплейта
-  .querySelector('div'); // В фрагменте находим нужный элемент
+  .content
+  .querySelector('div');
 
+const errorMessage = () => {
+  const cardElement = templateFormError.cloneNode(true);
+  mainPart.append(cardElement);
 
-const showAler = (message) => {
-  templateFormError.textContent = message;
+  // закрытие сообщения об ошибке
 
-  document.body.append(templateFormError);
+  const errorButton = cardElement.querySelector('.error__button');
 
-  setTimeout(() => {
-    templateFormError.remove();
-  }, 10000);
+  errorButton.addEventListener('click', () => {
+    cardElement.remove();
+  });
+  document.addEventListener('keydown', () => {
+    if (isEscEvent) {
+      cardElement.remove();
+    }
+  });
+  document.addEventListener('click', () => {
+    cardElement.remove();
+  });
 }
 
 
-const userForm = document.querySelector('.ad-form');
+// отправка формы
 
 userForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -130,13 +173,20 @@ userForm.addEventListener('submit', (evt) => {
   const formData = new FormData(evt.target);
 
   fetch(
-    'https://22.javpt.pages.academy/keksobooking',
+    'https://22.javascript.pages.academy/keksobooking',
     {
       method: 'POST',
       body: formData,
     },
   )
+    .then(() => {
+      successMessage();
+      userForm.reset();
+    })
     .catch(() => {
-      showAler();
+      errorMessage();
     });
 });
+
+
+
