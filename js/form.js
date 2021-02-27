@@ -1,3 +1,7 @@
+import { marker, map, LAT, LNG } from './map.js';
+
+
+
 const PROPERTY_MIN_PRICE =
 {
   'bungalow': 0,
@@ -120,16 +124,25 @@ const successMessage = () => {
     cardElement.remove();
   });
 }
-//successMessage();
+
+
 
 // сброс настроек в исходное состояние
+// Возврат баллуна и попапа на место
+
+const resetFunction = function () {
+  userForm.reset();
+  marker.setLatLng({ lat: LAT, lng: LNG });
+  map.closePopup();
+};
+
+
 
 const resetButtonSuccess = document.querySelector('.ad-form__reset');
 
 resetButtonSuccess.addEventListener('click', () => {
-  userForm.reset();
+  resetFunction();
 });
-
 
 
 
@@ -181,7 +194,7 @@ userForm.addEventListener('submit', (evt) => {
   )
     .then(() => {
       successMessage();
-      userForm.reset();
+      resetFunction();
     })
     .catch(() => {
       errorMessage();
@@ -189,4 +202,4 @@ userForm.addEventListener('submit', (evt) => {
 });
 
 
-
+export { resetButtonSuccess };

@@ -4,6 +4,7 @@ import { createPopup } from './card.js';
 import { showAlert } from './utils.js';
 
 
+
 const ZOOM = 12;
 const LAT = 35.65;
 const LNG = 139.78;
@@ -100,6 +101,9 @@ const marker = L.marker(
 );
 marker.addTo(map);
 
+
+
+
 // Мадам знает толк в извращениях...я не придумала ничего лучше чем запихнуть карту в промис,
 // ибо у меня не функция как в демке, а константа
 // а ее возвращать у меня из промисса не вышло
@@ -140,6 +144,8 @@ fetch('https://22.javascript.pages.academy/keksobooking/data')
 const adressCordinate = document.querySelector('#address');
 adressCordinate.value = `${map._lastCenter.lat} , ${map._lastCenter.lng}`;
 
+
+
 marker.on('moveend', (evt) => {
   const move = evt.target.getLatLng();
   const x = move.lng.toFixed(COMMA_NUMBER);
@@ -151,3 +157,9 @@ marker.on('moveend', (evt) => {
 const mapValidity = document.querySelector('#map');
 
 mapValidity;
+
+
+
+
+
+export { marker, map, LAT, LNG };
