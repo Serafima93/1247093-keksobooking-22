@@ -1,8 +1,9 @@
 /* global L:readonly */
 
 import { createPopup } from './card.js';
-import { showAlert } from './utils.js';
+import { getData } from './api.js';
 
+const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
 
 
 const ZOOM = 12;
@@ -103,42 +104,31 @@ marker.addTo(map);
 
 
 
+getData(getUrl, (adverts) => {
+  adverts.forEach((offer) => {
 
-// Мадам знает толк в извращениях...я не придумала ничего лучше чем запихнуть карту в промис,
-// ибо у меня не функция как в демке, а константа
-// а ее возвращать у меня из промисса не вышло
-
-
-fetch('https://22.javascript.pages.academy/keksobooking/data')
-  .then((response) => response.json())
-  .then((adverts) => {
-
-    adverts.forEach((offer) => {
-
-      const iconUsual = L.icon({
-        iconUrl: USAUAL_ICON_DATA.iconUrl,
-        iconSize: USAUAL_ICON_DATA.iconSize,
-        iconAnchor: USAUAL_ICON_DATA.iconAnchor,
-      });
-
-      const marker = L.marker(
-        {
-          lat: offer.location.lat,
-          lng: offer.location.lng,
-        },
-        {
-          iconUsual,
-        },
-      );
-      marker.addTo(map)
-        .bindPopup(
-          createPopup(offer),
-        );
+    const iconUsual = L.icon({
+      iconUrl: USAUAL_ICON_DATA.iconUrl,
+      iconSize: USAUAL_ICON_DATA.iconSize,
+      iconAnchor: USAUAL_ICON_DATA.iconAnchor,
     });
-  })
-  .catch(() => {
-    showAlert('Ошибка подключения. Попробуйте ещё раз');
+
+    const marker = L.marker(
+      {
+        lat: offer.location.lat,
+        lng: offer.location.lng,
+      },
+      {
+        iconUsual,
+      },
+    );
+    marker.addTo(map)
+      .bindPopup(
+        createPopup(offer),
+      );
   });
+});
+
 
 
 const adressCordinate = document.querySelector('#address');
@@ -157,8 +147,6 @@ marker.on('moveend', (evt) => {
 const mapValidity = document.querySelector('#map');
 
 mapValidity;
-
-
 
 
 

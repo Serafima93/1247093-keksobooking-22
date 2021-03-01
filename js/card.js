@@ -1,7 +1,5 @@
-import { randomAdvert } from './data.js';
+import { randomAdvert, PROPERTY_TYPE } from './data.js';
 
-
-//const cardList = document.querySelector('#map-canvas');
 
 const templateFragment = document.querySelector('#card')
   .content // Находим фрагмент с содержимым темплейта
@@ -42,10 +40,12 @@ const createPopup = (offer) => {
   //тип жилья
 
   const typePopup = cardElement.querySelector('.popup__type');
-  typePopup.textContent = offer.offer.type;
+  typePopup.textContent = PROPERTY_TYPE[offer.offer.type];
+
   if (!offer.offer.type) {
     typePopup.remove();
   }
+
 
   //комнаты и гости
 
@@ -91,11 +91,24 @@ const createPopup = (offer) => {
   //фото жилья
 
   const photosPopup = cardElement.querySelector('.popup__photos');
-  let parentElemet = photosPopup.children
-  parentElemet[0].src = offer.offer.photos;
+  const photoPopup = cardElement.querySelector('.popup__photo');
+
+
+  photosPopup.innerHTML = '';
+  const photosArray = offer.offer.photos;
+
+  for (let i = 0; i <= photosArray.length - 1; i++) {
+    const ad = photosArray[i];
+    const newElement = photoPopup.cloneNode(true);
+    newElement.src = ad;
+    photosPopup.append(newElement);
+  }
   if (!offer.offer.photos) {
     photosPopup.remove();
   }
+
+
+
 
   //аватар пользователя
 
@@ -108,8 +121,9 @@ const createPopup = (offer) => {
 };
 
 
-export {createPopup, renderCards};
 
 
+//const cardList = document.querySelector('#map-canvas');
 //cardList.appendChild(createPopup(renderCards[0]));
 
+export { createPopup, renderCards };

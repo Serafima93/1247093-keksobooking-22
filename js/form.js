@@ -1,6 +1,8 @@
 import { marker, map, LAT, LNG } from './map.js';
+import { sendData } from './api.js';
 
 
+const sendUrl = 'https://22.javascript.pages.academy/keksobooking';
 
 const PROPERTY_MIN_PRICE =
 {
@@ -127,6 +129,7 @@ const successMessage = () => {
 
 
 
+
 // сброс настроек в исходное состояние
 // Возврат баллуна и попапа на место
 
@@ -135,7 +138,6 @@ const resetFunction = function () {
   marker.setLatLng({ lat: LAT, lng: LNG });
   map.closePopup();
 };
-
 
 
 const resetButtonSuccess = document.querySelector('.ad-form__reset');
@@ -180,26 +182,21 @@ const errorMessage = () => {
 
 // отправка формы
 
-userForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
 
-  const formData = new FormData(evt.target);
+const setUserFormSubmit = (onSuccess, onFail) => {
+  userForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
 
-  fetch(
-    'https://22.javascript.pages.academy/keksobooking',
-    {
-      method: 'POST',
-      body: formData,
-    },
-  )
-    .then(() => {
-      successMessage();
-      resetFunction();
-    })
-    .catch(() => {
-      errorMessage();
-    });
-});
+    sendData(
+      sendUrl,
+      () => onSuccess(resetFunction()),
+      () => onFail(),
+      new FormData(evt.target),
+    );
+  });
+};
+
+setUserFormSubmit(successMessage, errorMessage);
 
 
-export { resetButtonSuccess };
+export { resetFunction };
