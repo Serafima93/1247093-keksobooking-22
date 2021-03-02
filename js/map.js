@@ -3,7 +3,12 @@
 import { createPopup } from './card.js';
 import { getData } from './api.js';
 
+const SIMILAR_ADVERT_COUNT = 5;
+
 const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
+const adressCordinate = document.querySelector('#address');
+
+
 
 
 const ZOOM = 12;
@@ -104,34 +109,113 @@ marker.addTo(map);
 
 
 
-getData(getUrl, (adverts) => {
-  adverts.forEach((offer) => {
 
-    const iconUsual = L.icon({
-      iconUrl: USAUAL_ICON_DATA.iconUrl,
-      iconSize: USAUAL_ICON_DATA.iconSize,
-      iconAnchor: USAUAL_ICON_DATA.iconAnchor,
-    });
+const mapFilters = document.querySelector('.map__filters');
+const housingType = mapFilters.querySelector('#housing-type');
+// const housingPrice = mapFilters.querySelector('#housing-price');
+const housingRooms = mapFilters.querySelector('#housing-rooms');
+// const housingGuests = mapFilters.querySelector('#housing-guests');
+// const housingFeatures = mapFilters.querySelector('#housing-features');
 
-    const marker = L.marker(
-      {
-        lat: offer.location.lat,
-        lng: offer.location.lng,
-      },
-      {
-        iconUsual,
-      },
-    );
-    marker.addTo(map)
-      .bindPopup(
-        createPopup(offer),
-      );
+
+
+// получаем карточки
+// создаем событие на изменение фильтра у карты
+//
+// создание рейтинга для карточек
+// ранжировать карточки от большего к меньшему
+// отображение карточек с наиболее высоким рейтингом
+
+// удаляем старое при клике но новый элемент фильтра
+// отрисовывается заново
+
+
+const setHouseType = (cb) => {
+  housingType.addEventListener('change', (evt) => {
+    evt.target.value = housingType.value;
+    cb();
   });
+};
+
+const setRoomsCount = (cb) => {
+  housingRooms.addEventListener('change', (event) => {
+    event.target.value = housingRooms.value;
+    cb();
+  });
+};
+
+
+
+// вес карточки
+
+// Привести к строкам и числам!
+
+const getAdvertRank = (advert) => {
+
+  let rank = 0;
+  if (advert.offer.type === housingType.value) {
+    rank += 2;
+  }
+  if (advert.offer.rooms == housingRooms.value) {
+    rank += 1;
+  }
+
+  return rank;
+};
+
+
+const sortAdverts = (advertA, advertB) => {
+  const rankA = getAdvertRank(advertA);
+  const rankB = getAdvertRank(advertB);
+
+  return rankB - rankA;
+}
+
+
+const renderSimilarList = (adverts) => {
+  // getData(getUrl, (adverts) => {
+  adverts
+    .slice()
+    .sort(sortAdverts)
+    .slice(0, SIMILAR_ADVERT_COUNT).forEach((offer) => {
+
+      const iconUsual = L.icon({
+        iconUrl: USAUAL_ICON_DATA.iconUrl,
+        iconSize: USAUAL_ICON_DATA.iconSize,
+        iconAnchor: USAUAL_ICON_DATA.iconAnchor,
+      });
+
+      const marker2 = L.marker(
+        {
+          lat: offer.location.lat,
+          lng: offer.location.lng,
+        },
+        {
+          iconUsual,
+        },
+      );
+      marker2.remove();
+
+      marker2.addTo(map)
+        .bindPopup(
+          createPopup(offer),
+        );
+    });
+  // });
+};
+
+
+
+
+
+getData(getUrl, (adverts) => {
+  renderSimilarList(adverts);
+  setHouseType(renderSimilarList(adverts));
+  setRoomsCount(renderSimilarList(adverts));
 });
 
 
 
-const adressCordinate = document.querySelector('#address');
 adressCordinate.value = `${map._lastCenter.lat} , ${map._lastCenter.lng}`;
 
 
@@ -147,6 +231,11 @@ marker.on('moveend', (evt) => {
 const mapValidity = document.querySelector('#map');
 
 mapValidity;
+
+
+
+
+
 
 
 
