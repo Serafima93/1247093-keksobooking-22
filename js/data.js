@@ -69,5 +69,4 @@ const createAdvert = () => {
 
 const randomAdvert = new Array(SIMILAR_ADVERT_COUNT).fill(null).map(() => createAdvert());
 
-
-export { randomAdvert };
+export { randomAdvert, PROPERTY_TYPE };

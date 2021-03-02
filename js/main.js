@@ -1,7 +1,4 @@
-//import { randomAdvert } from './data.js';
-//randomAdvert;
-
-
+import './api.js';
 import './card.js';
 import './map.js';
 import './form.js';

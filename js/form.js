@@ -1,3 +1,9 @@
+import { marker, map, LAT, LNG } from './map.js';
+import { sendData } from './api.js';
+
+
+const sendUrl = 'https://22.javascript.pages.academy/keksobooking';
+
 const PROPERTY_MIN_PRICE =
 {
   'bungalow': 0,
@@ -94,3 +100,103 @@ roomNumber.addEventListener('change', (event) => {
 });
 
 
+// начао работы с формой
+
+const userForm = document.querySelector('.ad-form');
+const mainPart = document.querySelector('main');
+
+
+// поп-ап успешной отправки
+
+const templateFormSuccess = document.querySelector('#success')
+  .content
+  .querySelector('div');
+
+const successMessage = () => {
+  const cardElement = templateFormSuccess.cloneNode(true);
+
+  mainPart.append(cardElement);
+
+  document.addEventListener('keydown', () => {
+    if (isEscEvent) {
+      cardElement.remove();
+    }
+  });
+  document.addEventListener('click', () => {
+    cardElement.remove();
+  });
+}
+
+
+
+
+// сброс настроек в исходное состояние
+// Возврат баллуна и попапа на место
+
+const resetFunction = function () {
+  userForm.reset();
+  marker.setLatLng({ lat: LAT, lng: LNG });
+  map.closePopup();
+};
+
+
+const resetButtonSuccess = document.querySelector('.ad-form__reset');
+
+resetButtonSuccess.addEventListener('click', () => {
+  resetFunction();
+});
+
+
+
+// поп-ап ошибки
+
+const isEscEvent = (evt) => {
+  return evt.key === 'Escape' || evt.key === 'Esc';
+};
+
+const templateFormError = document.querySelector('#error')
+  .content
+  .querySelector('div');
+
+const errorMessage = () => {
+  const cardElement = templateFormError.cloneNode(true);
+  mainPart.append(cardElement);
+
+  // закрытие сообщения об ошибке
+
+  const errorButton = cardElement.querySelector('.error__button');
+
+  errorButton.addEventListener('click', () => {
+    cardElement.remove();
+  });
+  document.addEventListener('keydown', () => {
+    if (isEscEvent) {
+      cardElement.remove();
+    }
+  });
+  document.addEventListener('click', () => {
+    cardElement.remove();
+  });
+}
+
+
+// отправка формы
+
+
+const setUserFormSubmit = (onSuccess, onFail) => {
+  userForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendData(
+      sendUrl,
+      () => onSuccess(resetFunction()),
+      () => onFail(),
+      new FormData(evt.target),
+    );
+  });
+};
+
+setUserFormSubmit(successMessage, errorMessage);
+
+
+export { resetFunction };
