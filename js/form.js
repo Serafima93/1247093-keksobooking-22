@@ -76,6 +76,7 @@ const roomNumber = document.querySelector('#room_number');
 const guestNumber = document.querySelector('#capacity');
 
 
+
 guestNumber.addEventListener('change', (event) => {
   const userChoice = event.target.value;
 

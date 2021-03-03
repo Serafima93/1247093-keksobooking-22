@@ -3,6 +3,7 @@
 import { createPopup } from './card.js';
 import { getData } from './api.js';
 
+
 const SIMILAR_ADVERT_COUNT = 5;
 
 const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
@@ -112,11 +113,19 @@ marker.addTo(map);
 
 const mapFilters = document.querySelector('.map__filters');
 const housingType = mapFilters.querySelector('#housing-type');
-// const housingPrice = mapFilters.querySelector('#housing-price');
 const housingRooms = mapFilters.querySelector('#housing-rooms');
-// const housingGuests = mapFilters.querySelector('#housing-guests');
-// const housingFeatures = mapFilters.querySelector('#housing-features');
 
+const housingGuests = mapFilters.querySelector('#housing-guests');
+
+const housingPrice = mapFilters.querySelector('#housing-price');
+// const housingFeatures = mapFilters.querySelectorAll('.map__features input[name="features"]');
+const housingFeaturesChecked = mapFilters.querySelectorAll('.map__features input[name="features"]:checked');
+
+
+const priceValues = {
+  START: 10000,
+  FINAL: 50000,
+};
 
 
 // получаем карточки
@@ -137,12 +146,58 @@ const setHouseType = (cb) => {
   });
 };
 
+
 const setRoomsCount = (cb) => {
   housingRooms.addEventListener('change', (event) => {
     event.target.value = housingRooms.value;
     cb();
   });
 };
+
+const setGuestsCount = (cb) => {
+  housingGuests.addEventListener('change', (event) => {
+    event.target.value = housingGuests.value;
+    cb();
+  });
+};
+
+
+
+// получаем цифры, а тут value = 'low'
+
+const setPriceCount = (cb) => {
+  housingPrice.addEventListener('change', (event) => {
+    event.target.value = housingPrice.value;
+    cb();
+  });
+};
+
+
+
+// для одного работает. Как работать с коллекцией и почему не записывает в массив
+
+// const setFeaturesCount = (cb) => {
+
+//   housingFeatures.addEventListener('click', (event) => {
+//     if (event.target.checked) {
+//       housingFeatures.setAttribute('checked', 'checked')
+//       //     console.log('yep');
+//     }
+//     cb();
+//   });
+// };
+
+
+
+const checkedFeatures = Array.from(housingFeaturesChecked);
+
+let featuresCheckedArray = [];
+
+for (let i = 0; i <= checkedFeatures.length - 1; i++) {
+  const ad = checkedFeatures[i].value;
+  featuresCheckedArray.push(ad);
+}
+
 
 
 
@@ -159,9 +214,27 @@ const getAdvertRank = (advert) => {
   if (advert.offer.rooms == housingRooms.value) {
     rank += 1;
   }
+  if (advert.offer.guests == housingGuests.value) {
+    rank += 1;
+  }
+
+  const priceInterval = {
+    'low': advert.offer.price < priceValues.START,
+    'middle': advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL,
+    'high': advert.offer.price > priceValues.FINAL,
+  };
+
+  if (advert.offer.price === priceInterval[housingPrice.value]) {
+    rank += 2;
+  }
+
+  if (advert.offer.features.indexOf(featuresCheckedArray)) {
+    rank += 2;
+  }
 
   return rank;
 };
+
 
 
 const sortAdverts = (advertA, advertB) => {
@@ -194,7 +267,9 @@ const renderSimilarList = (adverts) => {
           iconUsual,
         },
       );
-      marker2.remove();
+      // marker2.remove();
+      map.removeLayer(marker2);
+
 
       marker2.addTo(map)
         .bindPopup(
@@ -212,6 +287,8 @@ getData(getUrl, (adverts) => {
   renderSimilarList(adverts);
   setHouseType(renderSimilarList(adverts));
   setRoomsCount(renderSimilarList(adverts));
+  setGuestsCount(renderSimilarList(adverts));
+  setPriceCount(renderSimilarList(adverts));
 });
 
 
