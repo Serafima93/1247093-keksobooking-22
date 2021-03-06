@@ -14,7 +14,7 @@ const housingGuests = mapFilters.querySelector('#housing-guests');
 const housingPrice = mapFilters.querySelector('#housing-price');
 const housingFeatures = mapFilters.querySelector('#housing-features');
 
-const SIMILAR_ADVERT_COUNT = 5;
+const SIMILAR_ADVERT_COUNT = 10;
 
 const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
 const adressCordinate = document.querySelector('#address');
@@ -151,6 +151,9 @@ const setGuestsCount = (cb) => {
 };
 
 
+
+
+
 const setPriceCount = (cb) => {
   housingPrice.addEventListener('change', (evt) => {
     evt.target.value = housingPrice.value;
@@ -162,30 +165,35 @@ const setPriceCount = (cb) => {
 
 
 
-const createFeaturesArray = function () {
-  const housingFeaturesChecked = mapFilters.querySelectorAll('.map__features input[name="features"]:checked');
-  const checkedFeatures = Array.from(housingFeaturesChecked);
-  const featuresCheckedArray = [];
-  for (let i = 0; i <= checkedFeatures.length - 1; i++) {
-    const ad = checkedFeatures[i].value;
-    featuresCheckedArray.push(ad);
-  }
-  return featuresCheckedArray
-};
+// const createFeaturesArray = function () {
+//   const housingFeaturesChecked = mapFilters.querySelectorAll('.map__features input[name="features"]:checked');
+//   const checkedFeatures = Array.from(housingFeaturesChecked);
+//   const featuresCheckedArray = [];
+//   for (let i = 0; i <= checkedFeatures.length - 1; i++) {
+//     const ad = checkedFeatures[i].value;
+//     featuresCheckedArray.push(ad);
+//   }
+//   return featuresCheckedArray
+// };
 
 
-// Мне нужна помощь вот тут - ибо я не знаю как из события вернуть созданный массив,
-// чтобы его дальше запихнуть в рейтинг
+// let createFeaturesArray2 = function () {
 
-const setFeatures = (cb) => {
-  housingFeatures.addEventListener('change', () => {
-    createFeaturesArray();
-    // console.log(createFeaturesArray());
-    pins.clearLayers();
+//   const featuresCheckedArray2 = [];
 
-    cb()
-  });
-};
+//   housingFeatures.addEventListener('change', () => {
+//     createFeaturesArray();
+//     let newArray = createFeaturesArray()
+//     featuresCheckedArray2.push(newArray);
+//   });
+//   return featuresCheckedArray2
+// };
+
+// console.log(createFeaturesArray2());
+
+
+
+
 
 
 // вес карточки
@@ -194,7 +202,7 @@ const getAdvertRank = (advert) => {
 
   let rank = 0;
   if (advert.offer.type === housingType.value) {
-    rank += 2;
+    rank += 1;
   }
   if (advert.offer.rooms === Number(housingRooms.value)) {
     rank += 1;
@@ -256,13 +264,62 @@ const sortAdverts = (advertA, advertB) => {
 }
 
 
+// Получаю карточки с сервера
+// Показываю только те карточки у которых есть выбраный параметр
+// Ранжирую эти карточки
+
+
 
 
 const renderSimilarList = (adverts) => {
+
+  // let arr = adverts.map((advert) => {
+  //   return advert.offer.type;
+  // });
+
+  // let positiveArr = arr.filter(function(number) {
+  //   return number.length  <= 5;
+  // });
+
+
+  const samePropertyType = adverts.filter((ad) => {
+    if (!ad.offer.type.includes(housingType.value)) {
+      return
+    }
+    return ad
+  });
+
+  // почему оно работает?
+
+  const sameGuestCount = adverts.filter((ad) => {
+    if (!ad.offer.guests.toString().includes(housingGuests.value)) {
+      return
+    }
+    return ad
+  });
+
+
+  const sameRoomCount = adverts.filter((ad) => {
+    if (!ad.offer.rooms.toString().includes(housingRooms.value)) {
+      return
+    }
+    return ad
+  });
+
+  // склеиваем
+  const commonCount = samePropertyType.concat(sameRoomCount);
+  console.log(commonCount);
+
+  // удаляем дубли
+  const cleanArray = Array.from(new Set(commonCount));
+
+  console.log(cleanArray);
+
   adverts
     .slice()
     .sort(sortAdverts)
-    .slice(0, SIMILAR_ADVERT_COUNT).forEach((offer) => {
+    .slice(0, SIMILAR_ADVERT_COUNT)
+    .forEach((offer) => {
 
       const iconUsual = L.icon({
         iconUrl: USAUAL_ICON_DATA.iconUrl,
@@ -310,10 +367,10 @@ getData(getUrl, (adverts) => {
     () => renderSimilarList(adverts),
     RERENDER_DELAY,
   ));
-  setFeatures(_.debounce(
-    () => renderSimilarList(adverts),
-    RERENDER_DELAY,
-  ));
+  // setFeatures(_.debounce(
+  //   () => renderSimilarList(adverts),
+  //   RERENDER_DELAY,
+  // ));
 });
 
 
