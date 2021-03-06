@@ -1,3 +1,5 @@
+'use strict'
+
 const ALERT_SHOW_TIME = 10000;
 
 const getRandomIntInclusive = function (min, max) {

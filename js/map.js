@@ -1,16 +1,23 @@
+'use strict'
+
 /* global L:readonly */
+/* global _:readonly */
 
 import { createPopup } from './card.js';
 import { getData } from './api.js';
 
+const RERENDER_DELAY = 500;
+const mapFilters = document.querySelector('.map__filters');
+const housingType = mapFilters.querySelector('#housing-type');
+const housingRooms = mapFilters.querySelector('#housing-rooms');
+const housingGuests = mapFilters.querySelector('#housing-guests');
+const housingPrice = mapFilters.querySelector('#housing-price');
+const housingFeatures = mapFilters.querySelector('#housing-features');
 
 const SIMILAR_ADVERT_COUNT = 5;
 
 const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
 const adressCordinate = document.querySelector('#address');
-
-
-
 
 const ZOOM = 12;
 const LAT = 35.65;
@@ -108,38 +115,18 @@ const marker = L.marker(
 marker.addTo(map);
 
 
+// создаем группу слоев - пока пустую
+const pins = L.layerGroup([]);
+pins // добавляем его на карту
+  .addTo(map);
 
-
-const mapFilters = document.querySelector('.map__filters');
-const housingType = mapFilters.querySelector('#housing-type');
-const housingRooms = mapFilters.querySelector('#housing-rooms');
-
-const housingGuests = mapFilters.querySelector('#housing-guests');
-
-const housingPrice = mapFilters.querySelector('#housing-price');
-
-
-
-const priceValues = {
-  START: 10000,
-  FINAL: 50000,
-};
-
-
-// получаем карточки
-// создаем событие на изменение фильтра у карты
-//
-// создание рейтинга для карточек
-// ранжировать карточки от большего к меньшему
-// отображение карточек с наиболее высоким рейтингом
-
-// удаляем старое при клике но новый элемент фильтра
-// отрисовывается заново
 
 
 const setHouseType = (cb) => {
   housingType.addEventListener('change', (evt) => {
     evt.target.value = housingType.value;
+    pins.clearLayers();
+
     cb();
   });
 };
@@ -148,6 +135,8 @@ const setHouseType = (cb) => {
 const setRoomsCount = (cb) => {
   housingRooms.addEventListener('change', (evt) => {
     evt.target.value = housingRooms.value;
+    pins.clearLayers();
+
     cb();
   });
 };
@@ -155,6 +144,8 @@ const setRoomsCount = (cb) => {
 const setGuestsCount = (cb) => {
   housingGuests.addEventListener('change', (evt) => {
     evt.target.value = housingGuests.value;
+    pins.clearLayers();
+
     cb();
   });
 };
@@ -163,40 +154,38 @@ const setGuestsCount = (cb) => {
 const setPriceCount = (cb) => {
   housingPrice.addEventListener('change', (evt) => {
     evt.target.value = housingPrice.value;
+    pins.clearLayers();
+
     cb();
   });
 };
 
 
 
-// Почему оно работает???? И добавляет еще
-
-const housingFeatures = mapFilters.querySelector('.map__features');
-
-
-housingFeatures.addEventListener('change', (evt) => {
-  evt.target.value = housingFeatures.value;
-
-
+const createFeaturesArray = function () {
   const housingFeaturesChecked = mapFilters.querySelectorAll('.map__features input[name="features"]:checked');
   const checkedFeatures = Array.from(housingFeaturesChecked);
-
-  // console.log(checkedFeatures[0].value);
-
   const featuresCheckedArray = [];
-
   for (let i = 0; i <= checkedFeatures.length - 1; i++) {
     const ad = checkedFeatures[i].value;
     featuresCheckedArray.push(ad);
   }
-  // console.log(featuresCheckedArray);
-
-});
-
+  return featuresCheckedArray
+};
 
 
+// Мне нужна помощь вот тут - ибо я не знаю как из события вернуть созданный массив,
+// чтобы его дальше запихнуть в рейтинг
 
+const setFeatures = (cb) => {
+  housingFeatures.addEventListener('change', () => {
+    createFeaturesArray();
+    // console.log(createFeaturesArray());
+    pins.clearLayers();
 
+    cb()
+  });
+};
 
 
 // вес карточки
@@ -214,17 +203,43 @@ const getAdvertRank = (advert) => {
     rank += 1;
   }
 
-  const priceInterval = {
-    'low': advert.offer.price < priceValues.START,
-    'middle': advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL,
-    'high': advert.offer.price > priceValues.FINAL,
-  };
 
-  if (advert.offer.price === priceInterval[housingPrice.value]) {
+  const priceValues = {
+    START: 10000,
+    FINAL: 50000,
+  };
+  // const priceInterval = {
+  //   'low': advert.offer.price < priceValues.START,
+  //   'middle': advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL,
+  //   'high': advert.offer.price > priceValues.FINAL,
+  // };
+  // if (advert.offer.price === PriceRange[housingPrice.value]) {
+  //   rank += 1;
+  // }
+
+  let result;
+
+  // нужна помощь тут  ибо решение частичное, и мне кажется извращенное
+
+  if (housingPrice.value === 'low') {
+    result = advert.offer.price <= priceValues.START;
+    advert.offer.price === housingPrice.value;
+    rank += 2;
+    return result
+
+  }
+  if (housingPrice.value === 'middle') {
+    result = advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL;
+    advert.offer.price === housingPrice.value;
+    rank += 1;
+  }
+  if (housingPrice.value === 'high') {
+    result = advert.offer.price >= priceValues.FINAL;
+    advert.offer.price === housingPrice.value;
     rank += 1;
   }
 
-  // if (advert.offer.features.includes(featuresCheckedArray)) {
+  // if (advert.offer.features.includes(setFeatures())) {
   //   rank += 1;
   // }
 
@@ -241,6 +256,8 @@ const sortAdverts = (advertA, advertB) => {
 }
 
 
+
+
 const renderSimilarList = (adverts) => {
   adverts
     .slice()
@@ -253,6 +270,7 @@ const renderSimilarList = (adverts) => {
         iconAnchor: USAUAL_ICON_DATA.iconAnchor,
       });
 
+      // слой
       const marker2 = L.marker(
         {
           lat: offer.location.lat,
@@ -262,56 +280,54 @@ const renderSimilarList = (adverts) => {
           iconUsual,
         },
       );
-      marker2.remove();
-      // map.removeLayer(marker2);
 
 
-      marker2.addTo(map)
-        .bindPopup(
-          createPopup(offer),
-        );
+      marker2.bindPopup(
+        createPopup(offer),
+      );
+
+      pins.addLayer(marker2);
     });
 };
 
 
 
-
-
 getData(getUrl, (adverts) => {
   renderSimilarList(adverts);
-
-  // почему сработало
-
-  setHouseType(() => renderSimilarList(adverts));
-
-  setRoomsCount(() => renderSimilarList(adverts));
-  setGuestsCount(() => renderSimilarList(adverts));
-  setPriceCount(() => renderSimilarList(adverts));
+  setHouseType(_.debounce(
+    () => renderSimilarList(adverts),
+    RERENDER_DELAY,
+  ));
+  setRoomsCount(_.debounce(
+    () => renderSimilarList(adverts),
+    RERENDER_DELAY,
+  ));
+  setGuestsCount(_.debounce(
+    () => renderSimilarList(adverts),
+    RERENDER_DELAY,
+  ));
+  setPriceCount(_.debounce(
+    () => renderSimilarList(adverts),
+    RERENDER_DELAY,
+  ));
+  setFeatures(_.debounce(
+    () => renderSimilarList(adverts),
+    RERENDER_DELAY,
+  ));
 });
 
 
-
 adressCordinate.value = `${map._lastCenter.lat} , ${map._lastCenter.lng}`;
-
-
 
 marker.on('moveend', (evt) => {
   const move = evt.target.getLatLng();
   const x = move.lng.toFixed(COMMA_NUMBER);
   const y = move.lat.toFixed(COMMA_NUMBER);
-
   adressCordinate.value = `${x} , ${y}`;
 });
 
 const mapValidity = document.querySelector('#map');
-
 mapValidity;
-
-
-
-
-
-
 
 
 export { marker, map, LAT, LNG };

@@ -1,3 +1,5 @@
+'use strict'
+
 import { marker, map, LAT, LNG } from './map.js';
 import { sendData } from './api.js';
 
@@ -23,21 +25,27 @@ const roomCapacity = {
 
 const prorertyType = document.querySelector('#type');
 const propertyPrice = document.querySelector('#price');
+// Выбор времени регистрации
+const checkIn = document.querySelector('#timein');
+const checkOut = document.querySelector('#timeout');
+const prorertyDescription = document.querySelector('#title');
+const roomNumber = document.querySelector('#room_number');
+const guestNumber = document.querySelector('#capacity');
+// начало работы с формой
+const userForm = document.querySelector('.ad-form');
+const mainPart = document.querySelector('main');
+const resetButtonSuccess = document.querySelector('.ad-form__reset');
 
 
-prorertyType.addEventListener('change', (event) => {
 
-  event.target.value === prorertyType.value;
+
+prorertyType.addEventListener('change', (evt) => {
+
+  evt.target.value === prorertyType.value;
   propertyPrice.placeholder = PROPERTY_MIN_PRICE[prorertyType.value];
   propertyPrice.min = PROPERTY_MIN_PRICE[prorertyType.value];
 
 });
-
-
-// Выбор времени регистрации
-
-const checkIn = document.querySelector('#timein');
-const checkOut = document.querySelector('#timeout');
 
 const makeSameValue = function (first, second) {
   second.value = first.value;
@@ -51,9 +59,8 @@ checkIn.addEventListener('change', () => {
   makeSameValue(checkIn, checkOut);
 });
 
-// Поле описания
 
-const prorertyDescription = document.querySelector('#title');
+// Поле описания
 
 prorertyDescription.addEventListener('input', () => {
   const valueLength = prorertyDescription.value.length;
@@ -72,13 +79,8 @@ prorertyDescription.addEventListener('input', () => {
 
 // Поле комнат
 
-const roomNumber = document.querySelector('#room_number');
-const guestNumber = document.querySelector('#capacity');
-
-
-
-guestNumber.addEventListener('change', (event) => {
-  const userChoice = event.target.value;
+guestNumber.addEventListener('change', (evt) => {
+  const userChoice = evt.target.value;
 
   guestNumber.setCustomValidity('');
 
@@ -89,8 +91,8 @@ guestNumber.addEventListener('change', (event) => {
 });
 
 
-roomNumber.addEventListener('change', (event) => {
-  const userChoice = event.target.value;
+roomNumber.addEventListener('change', (evt) => {
+  const userChoice = evt.target.value;
 
   roomNumber.setCustomValidity('');
 
@@ -99,12 +101,6 @@ roomNumber.addEventListener('change', (event) => {
   }
   roomNumber.reportValidity();
 });
-
-
-// начао работы с формой
-
-const userForm = document.querySelector('.ad-form');
-const mainPart = document.querySelector('main');
 
 
 // поп-ап успешной отправки
@@ -128,9 +124,6 @@ const successMessage = () => {
   });
 }
 
-
-
-
 // сброс настроек в исходное состояние
 // Возврат баллуна и попапа на место
 
@@ -140,8 +133,6 @@ const resetFunction = function () {
   map.closePopup();
 };
 
-
-const resetButtonSuccess = document.querySelector('.ad-form__reset');
 
 resetButtonSuccess.addEventListener('click', () => {
   resetFunction();

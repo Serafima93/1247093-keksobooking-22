@@ -1,11 +1,15 @@
-import { randomAdvert, PROPERTY_TYPE } from './data.js';
+'use strict'
 
+const PROPERTY_TYPE = {
+  'palace': 'Дворец',
+  'flat': 'Квартира',
+  'house': 'Дом',
+  'bungalo': 'Бунгало',
+}
 
 const templateFragment = document.querySelector('#card')
   .content // Находим фрагмент с содержимым темплейта
   .querySelector('article'); // В фрагменте находим нужный элемент
-
-const renderCards = randomAdvert;
 
 // делаю карточку по шаблону
 
@@ -107,9 +111,6 @@ const createPopup = (offer) => {
     photosPopup.remove();
   }
 
-
-
-
   //аватар пользователя
 
   const avatarPopup = cardElement.querySelector('.popup__avatar');
@@ -120,10 +121,4 @@ const createPopup = (offer) => {
   return cardElement;
 };
 
-
-
-
-//const cardList = document.querySelector('#map-canvas');
-//cardList.appendChild(createPopup(renderCards[0]));
-
-export { createPopup, renderCards };
+export { createPopup };
