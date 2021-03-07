@@ -6,13 +6,19 @@
 import { createPopup } from './card.js';
 import { getData } from './api.js';
 
+const priceValues = {
+  START: 10000,
+  FINAL: 50000,
+};
+
+
 const RERENDER_DELAY = 500;
 const mapFilters = document.querySelector('.map__filters');
 const housingType = mapFilters.querySelector('#housing-type');
 const housingRooms = mapFilters.querySelector('#housing-rooms');
 const housingGuests = mapFilters.querySelector('#housing-guests');
 const housingPrice = mapFilters.querySelector('#housing-price');
-const housingFeatures = mapFilters.querySelector('#housing-features');
+// const housingFeatures = mapFilters.querySelector('#housing-features');
 
 const SIMILAR_ADVERT_COUNT = 10;
 
@@ -131,7 +137,6 @@ const setHouseType = (cb) => {
   });
 };
 
-
 const setRoomsCount = (cb) => {
   housingRooms.addEventListener('change', (evt) => {
     evt.target.value = housingRooms.value;
@@ -150,10 +155,6 @@ const setGuestsCount = (cb) => {
   });
 };
 
-
-
-
-
 const setPriceCount = (cb) => {
   housingPrice.addEventListener('change', (evt) => {
     evt.target.value = housingPrice.value;
@@ -162,7 +163,6 @@ const setPriceCount = (cb) => {
     cb();
   });
 };
-
 
 
 // const createFeaturesArray = function () {
@@ -177,20 +177,20 @@ const setPriceCount = (cb) => {
 // };
 
 
-// let createFeaturesArray2 = function () {
 
-//   const featuresCheckedArray2 = [];
-
+// let arr = [];
+// const setFeatures = (cb) => {
 //   housingFeatures.addEventListener('change', () => {
 //     createFeaturesArray();
+//     console.log(createFeaturesArray());
 //     let newArray = createFeaturesArray()
-//     featuresCheckedArray2.push(newArray);
+//     arr.push(newArray);
+//     pins.clearLayers();
+
+//     cb();
 //   });
-//   return featuresCheckedArray2
 // };
-
-// console.log(createFeaturesArray2());
-
+// console.log(setFeatures());
 
 
 
@@ -204,6 +204,7 @@ const getAdvertRank = (advert) => {
   if (advert.offer.type === housingType.value) {
     rank += 1;
   }
+
   if (advert.offer.rooms === Number(housingRooms.value)) {
     rank += 1;
   }
@@ -212,17 +213,15 @@ const getAdvertRank = (advert) => {
   }
 
 
-  const priceValues = {
-    START: 10000,
-    FINAL: 50000,
-  };
+
   // const priceInterval = {
-  //   'low': advert.offer.price < priceValues.START,
-  //   'middle': advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL,
-  //   'high': advert.offer.price > priceValues.FINAL,
+  //   low: advert.offer.price < priceValues.START,
+  //   middle: advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL,
+  //   high: advert.offer.price > priceValues.FINAL,
   // };
   // if (advert.offer.price === PriceRange[housingPrice.value]) {
   //   rank += 1;
+  // return priceInterval[housingPrice.value];
   // }
 
   let result;
@@ -232,7 +231,7 @@ const getAdvertRank = (advert) => {
   if (housingPrice.value === 'low') {
     result = advert.offer.price <= priceValues.START;
     advert.offer.price === housingPrice.value;
-    rank += 2;
+    rank += 1;
     return result
 
   }
@@ -254,7 +253,7 @@ const getAdvertRank = (advert) => {
   return rank;
 };
 
-
+// расположение рейтинга
 
 const sortAdverts = (advertA, advertB) => {
   const rankA = getAdvertRank(advertA);
@@ -263,59 +262,63 @@ const sortAdverts = (advertA, advertB) => {
   return rankB - rankA;
 }
 
-
-// Получаю карточки с сервера
-// Показываю только те карточки у которых есть выбраный параметр
-// Ранжирую эти карточки
-
-
-
+// начинаем фильтрацию и отрисовку
 
 const renderSimilarList = (adverts) => {
 
-  // let arr = adverts.map((advert) => {
-  //   return advert.offer.type;
-  // });
-
-  // let positiveArr = arr.filter(function(number) {
-  //   return number.length  <= 5;
-  // });
-
-
   const samePropertyType = adverts.filter((ad) => {
-    if (!ad.offer.type.includes(housingType.value)) {
-      return
+    if (ad.offer.type.includes(housingType.value)) {
+      return ad
     }
-    return ad
+    if (housingType.value === 'any') {
+      return adverts
+    }
   });
 
-  // почему оно работает?
+  //  Я не хочу добавлять для всех any Так лучше для всех.
+  //  Иначе если кто-то не выбрал фильтр то ему все показывается
 
   const sameGuestCount = adverts.filter((ad) => {
-    if (!ad.offer.guests.toString().includes(housingGuests.value)) {
-      return
+    if (ad.offer.guests.toString().includes(housingGuests.value)) {
+      return ad
     }
-    return ad
   });
 
 
   const sameRoomCount = adverts.filter((ad) => {
-    if (!ad.offer.rooms.toString().includes(housingRooms.value)) {
-      return
+    if (ad.offer.rooms.toString().includes(housingRooms.value)) {
+      return ad
     }
-    return ad
   });
 
+  const samePriceCount = adverts.filter((ad) => {
+
+    const priceLimits = {
+      middle: ad.offer.price >= priceValues.START && ad.offer.price <= priceValues.FINAL,
+      low: ad.offer.price < priceValues.START,
+      high: ad.offer.price >= priceValues.FINAL,
+    };
+    return priceLimits[housingPrice.value];
+  });
+
+
+  // const sameFeaturesCount = adverts.filter((ad) => {
+  //   const checkedList = createFeaturesArray();
+
+  //   ad.offer.features.filter((advert) => {
+  //     return checkedList.includes(advert);
+  //   });
+  // });
+  // console.log(sameFeaturesCount);
+
   // склеиваем
-  const commonCount = samePropertyType.concat(sameRoomCount);
-  console.log(commonCount);
+  const commonCount = samePropertyType.concat(sameRoomCount).concat(sameGuestCount).concat(samePriceCount);
 
   // удаляем дубли
   const cleanArray = Array.from(new Set(commonCount));
+  // console.log(cleanArray);
 
-  console.log(cleanArray);
-
-  adverts
+  cleanArray
     .slice()
     .sort(sortAdverts)
     .slice(0, SIMILAR_ADVERT_COUNT)
@@ -327,7 +330,6 @@ const renderSimilarList = (adverts) => {
         iconAnchor: USAUAL_ICON_DATA.iconAnchor,
       });
 
-      // слой
       const marker2 = L.marker(
         {
           lat: offer.location.lat,
@@ -337,7 +339,6 @@ const renderSimilarList = (adverts) => {
           iconUsual,
         },
       );
-
 
       marker2.bindPopup(
         createPopup(offer),
