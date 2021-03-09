@@ -220,14 +220,17 @@ const renderSimilarList = (adverts) => {
     }
     return ad.offer.guests.toString() === housingGuests.value;
   }).filter((ad) => {
-    const checkedList = createFeaturesArray();
-    let result = true;
-    let i = 0;
+    const checkedList = createFeaturesArray(); // получаем массив выделеных фичей
+    let result = true; // для метода includes. Если мы что-то получили из checkedList
+    let i = 0; // иттератор цикла while
     while (result && i < checkedList.length) {
       result = ad.offer.features.includes(checkedList[i]);
       i++;
+      // пока результат положительный и элемент массива меньше длины массива
+      // результат равен фичам карточки включающим в себя  массив выделеных фичей
+      // идем к следующуму э-ту массива
     }
-    return result
+    return result // возвращаем карточки подходящие под наши требования
   });
 
 
