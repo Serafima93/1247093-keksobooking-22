@@ -18,7 +18,9 @@ const housingType = mapFilters.querySelector('#housing-type');
 const housingRooms = mapFilters.querySelector('#housing-rooms');
 const housingGuests = mapFilters.querySelector('#housing-guests');
 const housingPrice = mapFilters.querySelector('#housing-price');
-// const housingFeatures = mapFilters.querySelector('#housing-features');
+const housingFeatures = mapFilters.querySelector('#housing-features');
+const ANY = 'any';
+
 
 const SIMILAR_ADVERT_COUNT = 10;
 
@@ -165,162 +167,73 @@ const setPriceCount = (cb) => {
 };
 
 
-// const createFeaturesArray = function () {
-//   const housingFeaturesChecked = mapFilters.querySelectorAll('.map__features input[name="features"]:checked');
-//   const checkedFeatures = Array.from(housingFeaturesChecked);
-//   const featuresCheckedArray = [];
-//   for (let i = 0; i <= checkedFeatures.length - 1; i++) {
-//     const ad = checkedFeatures[i].value;
-//     featuresCheckedArray.push(ad);
-//   }
-//   return featuresCheckedArray
-// };
-
-
-
-// let arr = [];
-// const setFeatures = (cb) => {
-//   housingFeatures.addEventListener('change', () => {
-//     createFeaturesArray();
-//     console.log(createFeaturesArray());
-//     let newArray = createFeaturesArray()
-//     arr.push(newArray);
-//     pins.clearLayers();
-
-//     cb();
-//   });
-// };
-// console.log(setFeatures());
-
-
-
-
-
-// вес карточки
-
-const getAdvertRank = (advert) => {
-
-  let rank = 0;
-  if (advert.offer.type === housingType.value) {
-    rank += 1;
+const createFeaturesArray = function () {
+  const housingFeaturesChecked = mapFilters.querySelectorAll('.map__features input[name="features"]:checked');
+  const checkedFeatures = Array.from(housingFeaturesChecked);
+  const featuresCheckedArray = [];
+  for (let i = 0; i <= checkedFeatures.length - 1; i++) {
+    const ad = checkedFeatures[i].value;
+    featuresCheckedArray.push(ad);
   }
-
-  if (advert.offer.rooms === Number(housingRooms.value)) {
-    rank += 1;
-  }
-  if (advert.offer.guests === Number(housingGuests.value)) {
-    rank += 1;
-  }
-
-
-
-  // const priceInterval = {
-  //   low: advert.offer.price < priceValues.START,
-  //   middle: advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL,
-  //   high: advert.offer.price > priceValues.FINAL,
-  // };
-  // if (advert.offer.price === PriceRange[housingPrice.value]) {
-  //   rank += 1;
-  // return priceInterval[housingPrice.value];
-  // }
-
-  let result;
-
-  // нужна помощь тут  ибо решение частичное, и мне кажется извращенное
-
-  if (housingPrice.value === 'low') {
-    result = advert.offer.price <= priceValues.START;
-    advert.offer.price === housingPrice.value;
-    rank += 1;
-    return result
-
-  }
-  if (housingPrice.value === 'middle') {
-    result = advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL;
-    advert.offer.price === housingPrice.value;
-    rank += 1;
-  }
-  if (housingPrice.value === 'high') {
-    result = advert.offer.price >= priceValues.FINAL;
-    advert.offer.price === housingPrice.value;
-    rank += 1;
-  }
-
-  // if (advert.offer.features.includes(setFeatures())) {
-  //   rank += 1;
-  // }
-
-  return rank;
+  return featuresCheckedArray
 };
 
-// расположение рейтинга
+// let newArray = [];
 
-const sortAdverts = (advertA, advertB) => {
-  const rankA = getAdvertRank(advertA);
-  const rankB = getAdvertRank(advertB);
+const setFeatures = (cb) => {
 
-  return rankB - rankA;
-}
+  housingFeatures.addEventListener('change', () => {
 
-// начинаем фильтрацию и отрисовку
+    // newArray = createFeaturesArray();
+    // newArray;
+    pins.clearLayers();
+    cb();
+  });
+};
+
+
 
 const renderSimilarList = (adverts) => {
 
-  const samePropertyType = adverts.filter((ad) => {
-    if (ad.offer.type.includes(housingType.value)) {
-      return ad
+
+  const filterAdData = adverts.filter(function (ad) {
+    if (housingType.value === ANY) {
+      return true;
     }
-    if (housingType.value === 'any') {
-      return adverts
-    }
-  });
-
-  //  Я не хочу добавлять для всех any Так лучше для всех.
-  //  Иначе если кто-то не выбрал фильтр то ему все показывается
-
-  const sameGuestCount = adverts.filter((ad) => {
-    if (ad.offer.guests.toString().includes(housingGuests.value)) {
-      return ad
-    }
-  });
-
-
-  const sameRoomCount = adverts.filter((ad) => {
-    if (ad.offer.rooms.toString().includes(housingRooms.value)) {
-      return ad
-    }
-  });
-
-  const samePriceCount = adverts.filter((ad) => {
-
-    const priceLimits = {
+    return ad.offer.type === housingType.value;
+  }).filter((ad) => {
+    const priceLimit = {
+      any: ad.offer.type,
       middle: ad.offer.price >= priceValues.START && ad.offer.price <= priceValues.FINAL,
       low: ad.offer.price < priceValues.START,
       high: ad.offer.price >= priceValues.FINAL,
     };
-    return priceLimits[housingPrice.value];
+    return priceLimit[housingPrice.value];
+  }).filter((ad) => {
+    if (housingRooms.value === ANY) {
+      return true;
+    }
+    return ad.offer.rooms.toString() === housingRooms.value;
+  }).filter((ad) => {
+    if (housingGuests.value === ANY) {
+      return true;
+    }
+    return ad.offer.guests.toString() === housingGuests.value;
+  }).filter((ad) => {
+    const checkedList = createFeaturesArray();
+    let result = true;
+    let i = 0;
+    while (result && i < checkedList.length) {
+      result = ad.offer.features.includes(checkedList[i]);
+      i++;
+    }
+    return result
   });
 
 
-  // const sameFeaturesCount = adverts.filter((ad) => {
-  //   const checkedList = createFeaturesArray();
-
-  //   ad.offer.features.filter((advert) => {
-  //     return checkedList.includes(advert);
-  //   });
-  // });
-  // console.log(sameFeaturesCount);
-
-  // склеиваем
-  const commonCount = samePropertyType.concat(sameRoomCount).concat(sameGuestCount).concat(samePriceCount);
-
-  // удаляем дубли
-  const cleanArray = Array.from(new Set(commonCount));
-  // console.log(cleanArray);
-
-  cleanArray
-    .slice()
-    .sort(sortAdverts)
+  filterAdData
+    // .slice()
+    // .sort(sortAdverts)
     .slice(0, SIMILAR_ADVERT_COUNT)
     .forEach((offer) => {
 
@@ -368,10 +281,10 @@ getData(getUrl, (adverts) => {
     () => renderSimilarList(adverts),
     RERENDER_DELAY,
   ));
-  // setFeatures(_.debounce(
-  //   () => renderSimilarList(adverts),
-  //   RERENDER_DELAY,
-  // ));
+  setFeatures(_.debounce(
+    () => renderSimilarList(adverts),
+    RERENDER_DELAY,
+  ));
 });
 
 
@@ -388,4 +301,4 @@ const mapValidity = document.querySelector('#map');
 mapValidity;
 
 
-export { marker, map, LAT, LNG };
+export { marker, map, mapFilter, LAT, LNG };

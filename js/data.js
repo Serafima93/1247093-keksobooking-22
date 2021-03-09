@@ -68,7 +68,82 @@
 // };
 
 
+
 // //создание массива объявлений
 
 // const randomAdvert = new Array(SIMILAR_ADVERT_COUNT).fill(null).map(() => createAdvert());
 
+// вес карточки
+
+// const getAdvertRank = (advert) => {
+
+//   let rank = 0;
+//   if (advert.offer.type === housingType.value) {
+//     rank += 1;
+//   }
+
+//   if (advert.offer.rooms === Number(housingRooms.value)) {
+//     rank += 1;
+//   }
+//   if (advert.offer.guests === Number(housingGuests.value)) {
+//     rank += 1;
+//   }
+//   let result;
+
+//   // нужна помощь тут  ибо решение частичное, и мне кажется извращенное
+
+//   if (housingPrice.value === 'low') {
+//     result = advert.offer.price <= priceValues.START;
+//     advert.offer.price === housingPrice.value;
+//     rank += 1;
+//     return result
+
+//   }
+//   if (housingPrice.value === 'middle') {
+//     result = advert.offer.price >= priceValues.START && advert.offer.price <= priceValues.FINAL;
+//     advert.offer.price === housingPrice.value;
+//     rank += 1;
+//   }
+//   if (housingPrice.value === 'high') {
+//     result = advert.offer.price >= priceValues.FINAL;
+//     advert.offer.price === housingPrice.value;
+//     rank += 1;
+//   }
+
+//   if (advert.offer.features.includes(newArray)) {
+//     rank += 1;
+//   }
+//   return rank;
+// };
+
+// расположение рейтинга
+
+// const sortAdverts = (advertA, advertB) => {
+//   const rankA = getAdvertRank(advertA);
+//   const rankB = getAdvertRank(advertB);
+
+//   return rankB - rankA;
+// }
+
+// начинаем фильтрацию и отрисовку
+
+// const samePropertyType = adverts.filter((ad) => {
+//   if (ad.offer.type.includes(housingType.value)) {
+//     return ad
+//   }
+//   if (housingType.value === 'any') {
+//     return adverts
+//   }
+// }).filter((ad) => {
+//   if (ad.offer.guests.toString().includes(housingGuests.value)) {
+//     return ad
+//   }
+// }).filter((ad) => {
+//   if (ad.offer.guests.toString().includes(housingGuests.value)) {
+//     return ad
+//   }
+// }).filter((ad) => {
+//   if (ad.offer.rooms.toString().includes(housingRooms.value)) {
+//     return ad
+//   }
+// });

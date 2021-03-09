@@ -1,7 +1,9 @@
 'use strict'
 
-import { marker, map, LAT, LNG } from './map.js';
+import { marker, map, mapFilter, LAT, LNG } from './map.js';
 import { sendData } from './api.js';
+import { avatarPreview, previewflatPhoto } from './avatar.js';
+
 
 
 const sendUrl = 'https://22.javascript.pages.academy/keksobooking';
@@ -129,8 +131,12 @@ const successMessage = () => {
 
 const resetFunction = function () {
   userForm.reset();
+  mapFilter.reset();
   marker.setLatLng({ lat: LAT, lng: LNG });
   map.closePopup();
+  avatarPreview.src = 'img/muffin-grey.svg';
+  const newChild = previewflatPhoto.querySelector('.ad-form__photo img');
+  previewflatPhoto.removeChild(newChild);
 };
 
 
