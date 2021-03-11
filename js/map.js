@@ -26,7 +26,6 @@ const USAUAL_ICON_DATA = {
 
 const COMMA_NUMBER = 5;
 
-
 const priceValues = {
   START: 10000,
   FINAL: 50000,
@@ -37,7 +36,9 @@ const housingType = mapFilters.querySelector('#housing-type');
 const housingRooms = mapFilters.querySelector('#housing-rooms');
 const housingGuests = mapFilters.querySelector('#housing-guests');
 const housingPrice = mapFilters.querySelector('#housing-price');
-const housingFeatures = mapFilters.querySelector('#housing-features');
+// const housingFeatures = mapFilters.querySelector('#housing-features');
+const selectFilters = document.querySelectorAll('.map__filters select');
+
 
 const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
 const adressCordinate = document.querySelector('#address');
@@ -140,59 +141,63 @@ const createFeaturesArray = function () {
 
 
 
-const setHouseType = (cb) => {
-  housingType.addEventListener('change', (evt) => {
-    evt.target.value = housingType.value;
-    pins.clearLayers();
+// const setHouseType = (cb) => {
+//   housingType.addEventListener('change', (evt) => {
+//     evt.target.value = housingType.value;
+//     pins.clearLayers();
 
-    cb();
-  });
-};
-
-const setRoomsCount = (cb) => {
-  housingRooms.addEventListener('change', (evt) => {
-    evt.target.value = housingRooms.value;
-    pins.clearLayers();
-
-    cb();
-  });
-};
-
-const setGuestsCount = (cb) => {
-  housingGuests.addEventListener('change', (evt) => {
-    evt.target.value = housingGuests.value;
-    pins.clearLayers();
-
-    cb();
-  });
-};
-
-const setPriceCount = (cb) => {
-  housingPrice.addEventListener('change', (evt) => {
-    evt.target.value = housingPrice.value;
-    pins.clearLayers();
-
-    cb();
-  });
-};
-
-
-const setFeatures = (cb) => {
-
-  housingFeatures.addEventListener('change', () => {
-
-    pins.clearLayers();
-    cb();
-  });
-};
-
-// const selectFilters = document.querySelectorAll('.map__filters select');
-
-// selectFilters.forEach(function (elem) {
-//   elem.addEventListener('change', function (evt) {
-//     elem.value = evt.target.value;
+//     cb();
 //   });
-// });
+// };
+
+// const setRoomsCount = (cb) => {
+//   housingRooms.addEventListener('change', (evt) => {
+//     evt.target.value = housingRooms.value;
+//     pins.clearLayers();
+
+//     cb();
+//   });
+// };
+
+// const setGuestsCount = (cb) => {
+//   housingGuests.addEventListener('change', (evt) => {
+//     evt.target.value = housingGuests.value;
+//     pins.clearLayers();
+
+//     cb();
+//   });
+// };
+
+// const setPriceCount = (cb) => {
+//   housingPrice.addEventListener('change', (evt) => {
+//     evt.target.value = housingPrice.value;
+//     pins.clearLayers();
+
+//     cb();
+//   });
+// };
+
+// const setFeatures = (cb) => {
+
+//   housingFeatures.addEventListener('change', () => {
+
+//     pins.clearLayers();
+//     cb();
+//   });
+// };
+
+
+
+
+const setFeatures2 = (cb) => {
+  selectFilters.forEach(function (elem) {
+    elem.addEventListener('change', function (evt) {
+      elem.value = evt.target.value;
+      pins.clearLayers();
+      cb();
+    });
+  });
+};
 
 
 
@@ -211,51 +216,72 @@ const renderSimilarList = (adverts) => {
     };
     const checkedList = createFeaturesArray(); // получаем массив выделеных фичей
 
-    // for (let i = 0; i < selectFilters.length; i++) {
-    //   if (selectFilters[i] === housingType) {
-    //     if (selectFilters[i].value !== ANY) { isType = el.offer.type === selectFilters[i].value; }
-    //   }
-    //   if (selectFilters[i] === housingRooms) {
-    //     if (selectFilters[i].value !== ANY) { isRooms = el.offer.rooms.toString() === selectFilters[i].value; }
-    //   }
-    // return isType && isRooms && isGuest && isFeature && isPrice
-    // }
-
-
-
-    // если вы имелии ввиду что надо вообще удалять функции для каждого поля (надеюсь что нет!!!!)
-    // у меня цикл работает только на первый элемент массива. Почему так?
-
-    if (housingType.value !== ANY) {
-      isType = el.offer.type === housingType.value;
-    }
-    if (housingRooms.value !== ANY) {
-      isRooms = el.offer.rooms.toString() === housingRooms.value;
-    }
-    if (housingGuests.value !== ANY) {
-      isGuest = el.offer.guests.toString() === housingGuests.value;
-    }
-    if (housingPrice.value !== ANY) {
-      isPrice = el.offer.price === priceLimit[housingPrice.value];
-      isPrice = priceLimit[housingPrice.value];
-    }
-    if (housingGuests.value !== ANY) {
-      isGuest = el.offer.guests.toString() === housingGuests.value;
-    }
-    if (checkedList.length > 0) {
-      let i = 0;
-      while (isFeature && i < checkedList.length) {
-        isFeature = el.offer.features.includes(checkedList[i]);
-        i++;
+    for (let i = 0; i < selectFilters.length; i++) {
+      if (selectFilters[i] === housingType) {
+        if (selectFilters[i].value !== ANY) { isType = el.offer.type === selectFilters[i].value; }
+      }
+      if (selectFilters[i] === housingRooms) {
+        if (selectFilters[i].value !== ANY && el.offer.rooms.toString() !== selectFilters[i].value) {
+          return isRooms = false
+        }
+      }
+      if (selectFilters[i] === housingGuests) {
+        if (selectFilters[i].value !== ANY && el.offer.guests.toString() !== selectFilters[i].value) {
+          return isGuest = false
+        }
+      }
+      if (housingPrice.value !== ANY) {
+        isPrice = el.offer.price === priceLimit[housingPrice.value];
+        isPrice = priceLimit[housingPrice.value];
+      }
+      if (checkedList.length > 0) {
+        let i = 0;
+        while (isFeature && i < checkedList.length) {
+          isFeature = el.offer.features.includes(checkedList[i]);
+          i++;
+        }
       }
     }
     return isType && isRooms && isGuest && isFeature && isPrice
   };
 
 
+
+
+  // если вы имелии ввиду что надо вообще удалять функции для каждого поля (надеюсь что нет!!!!)
+  //  я даже это сделала, но блин правильно ли?
+
+  //   if (housingType.value !== ANY) {
+  //     isType = el.offer.type === housingType.value;
+  //   }
+  //   if (housingRooms.value !== ANY) {
+  //     isRooms = el.offer.rooms.toString() === housingRooms.value;
+  //   }
+  //   if (housingGuests.value !== ANY) {
+  //     isGuest = el.offer.guests.toString() === housingGuests.value;
+  //   }
+  //   if (housingPrice.value !== ANY) {
+  //     isPrice = el.offer.price === priceLimit[housingPrice.value];
+  //     isPrice = priceLimit[housingPrice.value];
+  //   }
+  //   if (housingGuests.value !== ANY) {
+  //     isGuest = el.offer.guests.toString() === housingGuests.value;
+  //   }
+  //   if (checkedList.length > 0) {
+  //     let i = 0;
+  //     while (isFeature && i < checkedList.length) {
+  //       isFeature = el.offer.features.includes(checkedList[i]);
+  //       i++;
+  //     }
+  //   }
+  //   return isType && isRooms && isGuest && isFeature && isPrice
+  // };
+
+  // проверка
+
   let ads = adverts.filter(filterAdData);
 
-
+  // console.log(ads);
   ads
     .slice(0, SIMILAR_ADVERT_COUNT)
     .forEach((offer) => {
@@ -290,11 +316,11 @@ getData(getUrl, (adverts) => {
   renderSimilarList(adverts);
 
   let setFiter = _.debounce(() => {
-    setHouseType(() => renderSimilarList(adverts));
-    setRoomsCount(() => renderSimilarList(adverts));
-    setGuestsCount(() => renderSimilarList(adverts));
-    setPriceCount(() => renderSimilarList(adverts));
-    setFeatures(() => renderSimilarList(adverts));
+    // setHouseType(() => renderSimilarList(adverts));
+    // setRoomsCount(() => renderSimilarList(adverts));
+    // setGuestsCount(() => renderSimilarList(adverts));
+    // setPriceCount(() => renderSimilarList(adverts));
+    setFeatures2(() => renderSimilarList(adverts));
   }, RERENDER_DELAY);
   setFiter();
 });
