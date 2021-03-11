@@ -1,12 +1,8 @@
 'use strict'
 
-import { marker, map, mapFilter, LAT, LNG } from './map.js';
-import { sendData } from './api.js';
+import { marker, map, mapFilter, LAT, LNG, pins} from './map.js';
+import { sendData} from './api.js';
 import { avatarPreview, previewflatPhoto } from './avatar.js';
-
-
-
-const sendUrl = 'https://22.javascript.pages.academy/keksobooking';
 
 const PROPERTY_MIN_PRICE =
 {
@@ -24,6 +20,7 @@ const roomCapacity = {
   3: ['1', '2', '3'],
   100: ['0'],
 };
+const sendUrl = 'https://22.javascript.pages.academy/keksobooking';
 
 const prorertyType = document.querySelector('#type');
 const propertyPrice = document.querySelector('#price');
@@ -134,9 +131,10 @@ const resetFunction = function () {
   mapFilter.reset();
   marker.setLatLng({ lat: LAT, lng: LNG });
   map.closePopup();
+  pins.clearLayers();
   avatarPreview.src = 'img/muffin-grey.svg';
   const newChild = previewflatPhoto.querySelector('.ad-form__photo img');
-  previewflatPhoto.removeChild(newChild);
+  if (previewflatPhoto.childNodes.length > 0) { previewflatPhoto.removeChild(newChild); }
 };
 
 

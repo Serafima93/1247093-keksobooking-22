@@ -1,6 +1,8 @@
 
 // удалю перед защитой
 
+
+
 // import { getRandomIntInclusive, getRandomArbitrary, getRandomArrayElement } from './utils.js';
 
 // const SIMILAR_ADVERT_COUNT = 10;
@@ -80,6 +82,8 @@
 //   let rank = 0;
 //   if (advert.offer.type === housingType.value) {
 //     rank += 1;
+// .slice()
+// .sort(sortAdverts)
 //   }
 
 //   if (advert.offer.rooms === Number(housingRooms.value)) {
