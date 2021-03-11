@@ -177,9 +177,6 @@ const setPriceCount = (cb) => {
 };
 
 
-
-
-
 const setFeatures = (cb) => {
 
   housingFeatures.addEventListener('change', () => {
@@ -188,6 +185,15 @@ const setFeatures = (cb) => {
     cb();
   });
 };
+
+// const selectFilters = document.querySelectorAll('.map__filters select');
+
+// selectFilters.forEach(function (elem) {
+//   elem.addEventListener('change', function (evt) {
+//     elem.value = evt.target.value;
+//   });
+// });
+
 
 
 const renderSimilarList = (adverts) => {
@@ -205,6 +211,21 @@ const renderSimilarList = (adverts) => {
     };
     const checkedList = createFeaturesArray(); // получаем массив выделеных фичей
 
+    // for (let i = 0; i < selectFilters.length; i++) {
+    //   if (selectFilters[i] === housingType) {
+    //     if (selectFilters[i].value !== ANY) { isType = el.offer.type === selectFilters[i].value; }
+    //   }
+    //   if (selectFilters[i] === housingRooms) {
+    //     if (selectFilters[i].value !== ANY) { isRooms = el.offer.rooms.toString() === selectFilters[i].value; }
+    //   }
+    // return isType && isRooms && isGuest && isFeature && isPrice
+    // }
+
+
+
+    // если вы имелии ввиду что надо вообще удалять функции для каждого поля (надеюсь что нет!!!!)
+    // у меня цикл работает только на первый элемент массива. Почему так?
+
     if (housingType.value !== ANY) {
       isType = el.offer.type === housingType.value;
     }
@@ -218,7 +239,6 @@ const renderSimilarList = (adverts) => {
       isPrice = el.offer.price === priceLimit[housingPrice.value];
       isPrice = priceLimit[housingPrice.value];
     }
-
     if (housingGuests.value !== ANY) {
       isGuest = el.offer.guests.toString() === housingGuests.value;
     }
