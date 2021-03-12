@@ -27,7 +27,6 @@ const getRandomArbitrary = function (min, max, n) {
   return randomNumber
 }
 
-// Создание рандомного эллемента массива
 const getRandomArrayElement = (elements) => {
   return elements[getRandomIntInclusive(0, elements.length - 1)];
 };

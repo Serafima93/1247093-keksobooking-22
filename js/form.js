@@ -24,13 +24,11 @@ const sendUrl = 'https://22.javascript.pages.academy/keksobooking';
 
 const prorertyType = document.querySelector('#type');
 const propertyPrice = document.querySelector('#price');
-// Выбор времени регистрации
 const checkIn = document.querySelector('#timein');
 const checkOut = document.querySelector('#timeout');
 const prorertyDescription = document.querySelector('#title');
 const roomNumber = document.querySelector('#room_number');
 const guestNumber = document.querySelector('#capacity');
-// начало работы с формой
 const userForm = document.querySelector('.ad-form');
 const mainPart = document.querySelector('main');
 const resetButtonSuccess = document.querySelector('.ad-form__reset');
@@ -59,7 +57,6 @@ checkIn.addEventListener('change', () => {
 });
 
 
-// Поле описания
 
 prorertyDescription.addEventListener('input', () => {
   const valueLength = prorertyDescription.value.length;
@@ -76,7 +73,6 @@ prorertyDescription.addEventListener('input', () => {
   prorertyDescription.reportValidity();
 });
 
-// Поле комнат
 
 guestNumber.addEventListener('change', (evt) => {
   const userChoice = evt.target.value;
@@ -102,7 +98,6 @@ roomNumber.addEventListener('change', (evt) => {
 });
 
 
-// поп-ап успешной отправки
 
 const templateFormSuccess = document.querySelector('#success')
   .content
@@ -123,8 +118,6 @@ const successMessage = () => {
   });
 }
 
-// сброс настроек в исходное состояние
-// Возврат баллуна и попапа на место
 
 const resetFunction = function () {
   userForm.reset();
@@ -144,8 +137,6 @@ resetButtonSuccess.addEventListener('click', () => {
 
 
 
-// поп-ап ошибки
-
 const isEscEvent = (evt) => {
   return evt.key === 'Escape' || evt.key === 'Esc';
 };
@@ -157,9 +148,6 @@ const templateFormError = document.querySelector('#error')
 const errorMessage = () => {
   const cardElement = templateFormError.cloneNode(true);
   mainPart.append(cardElement);
-
-  // закрытие сообщения об ошибке
-
   const errorButton = cardElement.querySelector('.error__button');
 
   errorButton.addEventListener('click', () => {
@@ -176,7 +164,6 @@ const errorMessage = () => {
 }
 
 
-// отправка формы
 
 
 const setUserFormSubmit = (onSuccess, onFail) => {
