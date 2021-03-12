@@ -143,8 +143,7 @@ const createFeaturesArray = function () {
 
 
 const setFeatures = (cb) => {
-  mapFilters.addEventListener('change', (evt) => {
-    evt.target.value;
+  mapFilters.addEventListener('change', () => {
     pins.clearLayers();
     cb();
   });
