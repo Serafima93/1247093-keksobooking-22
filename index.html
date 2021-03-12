@@ -57,7 +57,7 @@
             <option value="3">Три комнаты</option>
           </select>
           <select name="housing-guests" id="housing-guests" class="map__filter">
-            <option value="any" selected>Любое число гостей</option>
+            <option value="any" selected >Любое число гостей</option>
             <option value="2">Два гостя</option>
             <option value="1">Один гость</option>
             <option value="0">Не для гостей</option>
@@ -96,7 +96,7 @@
               <img src="img/muffin-grey.svg" alt="Аватар пользователя" width="40" height="44">
             </div>
             <div class="ad-form__field">
-              <input type="file" id="avatar" name="avatar" class="ad-form-header__input visually-hidden">
+              <input type="file" id="avatar" name="avatar" class="ad-form-header__input visually-hidden" accept="image/png, image/jpeg">
               <label class="ad-form-header__drop-zone" for="avatar">Загрузить<br>фото...</label>
             </div>
             <p class="ad-form-header__info">Заполните все обязательные поля, назначьте цену, загрузите аватар и фото
@@ -107,6 +107,7 @@
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="title">Заголовок объявления</label>
           <input id="title" name="title" required type="text" placeholder="Милая, уютная квартирка в центре Токио">
+
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="address">Адрес (координаты)</label>
@@ -186,7 +187,7 @@
           <label class="ad-form__label">Фотография жилья</label>
           <div class="ad-form__photo-container">
             <div class="ad-form__upload">
-              <input type="file" id="images" name="images" class="ad-form__input visually-hidden">
+              <input type="file" id="images" name="images" accept="image/png, image/jpeg" class="ad-form__input visually-hidden" >
               <label for="images" class="ad-form__drop-zone">Загрузить<br>фото...</label>
             </div>
             <div class="ad-form__photo"></div>
@@ -260,6 +261,7 @@
     </div>
   </template>
 
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
   <script type="module" src="js/main.js"></script>
 
 

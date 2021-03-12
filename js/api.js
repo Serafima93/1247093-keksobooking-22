@@ -1,5 +1,6 @@
-import { showAlert } from './utils.js';
+'use strict'
 
+import { showAlert } from './utils.js';
 
 const getData = (URL, onSuccess) => {
   fetch(URL)
@@ -14,7 +15,6 @@ const getData = (URL, onSuccess) => {
 
 
 const sendData = (URL, onSuccess, onFail, body) => {
-
   fetch(
     URL,
     {

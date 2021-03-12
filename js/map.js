@@ -1,11 +1,14 @@
+'use strict'
+
 /* global L:readonly */
+/* global _:readonly */
 
 import { createPopup } from './card.js';
 import { getData } from './api.js';
 
-const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
-
-
+const ANY = 'any';
+const SIMILAR_ADVERT_COUNT = 10;
+const RERENDER_DELAY = 500;
 const ZOOM = 12;
 const LAT = 35.65;
 const LNG = 139.78;
@@ -22,6 +25,24 @@ const USAUAL_ICON_DATA = {
 };
 
 const COMMA_NUMBER = 5;
+
+const priceValues = {
+  START: 10000,
+  FINAL: 50000,
+};
+
+const mapFilters = document.querySelector('.map__filters');
+const housingType = mapFilters.querySelector('#housing-type');
+const housingRooms = mapFilters.querySelector('#housing-rooms');
+const housingGuests = mapFilters.querySelector('#housing-guests');
+const housingPrice = mapFilters.querySelector('#housing-price');
+
+
+
+
+
+const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
+const adressCordinate = document.querySelector('#address');
 
 // находим форму и добавляем неактивность
 const userForm = document.querySelector('.ad-form');
@@ -66,7 +87,6 @@ const makeFormActive = function () {
 
 // работа с картой
 
-
 const map = L.map('map')
   .on('load', () => {
     //Карта инициализирована. Возвращение атрибутов
@@ -103,51 +123,126 @@ const marker = L.marker(
 marker.addTo(map);
 
 
+// создаем группу слоев - пока пустую
+const pins = L.layerGroup([]);
+pins // добавляем его на карту
+  .addTo(map);
 
-getData(getUrl, (adverts) => {
-  adverts.forEach((offer) => {
 
-    const iconUsual = L.icon({
-      iconUrl: USAUAL_ICON_DATA.iconUrl,
-      iconSize: USAUAL_ICON_DATA.iconSize,
-      iconAnchor: USAUAL_ICON_DATA.iconAnchor,
-    });
+const createFeaturesArray = function () {
+  const housingFeaturesChecked = mapFilters.querySelectorAll('.map__features input[name="features"]:checked');
+  const checkedFeatures = Array.from(housingFeaturesChecked);
+  const featuresCheckedArray = [];
+  for (let i = 0; i <= checkedFeatures.length - 1; i++) {
+    const ad = checkedFeatures[i].value;
+    featuresCheckedArray.push(ad);
+  }
+  return featuresCheckedArray
+};
 
-    const marker = L.marker(
-      {
-        lat: offer.location.lat,
-        lng: offer.location.lng,
-      },
-      {
-        iconUsual,
-      },
-    );
-    marker.addTo(map)
-      .bindPopup(
+
+
+const setFeatures = (cb) => {
+  mapFilters.addEventListener('change', () => {
+    pins.clearLayers();
+    cb();
+  });
+};
+
+
+const renderSimilarList = (adverts) => {
+
+  const filterAdData = function (el) {
+    let isType = true;
+    let isPrice = true;
+    let isGuest = true;
+    let isRooms = true;
+    let isFeature = true;
+    const priceLimit = {
+      middle: el.offer.price >= priceValues.START && el.offer.price <= priceValues.FINAL,
+      low: el.offer.price < priceValues.START,
+      high: el.offer.price >= priceValues.FINAL,
+    };
+    const checkedList = createFeaturesArray(); // получаем массив выделеных фичей
+
+
+    if (housingType.value !== ANY) {
+      isType = el.offer.type === housingType.value;
+    }
+    if (housingRooms.value !== ANY) {
+      isRooms = el.offer.rooms.toString() === housingRooms.value;
+    }
+    if (housingGuests.value !== ANY) {
+      isGuest = el.offer.guests.toString() === housingGuests.value;
+    }
+    if (housingPrice.value !== ANY) {
+      isPrice = el.offer.price === priceLimit[housingPrice.value];
+      isPrice = priceLimit[housingPrice.value];
+    }
+    if (housingGuests.value !== ANY) {
+      isGuest = el.offer.guests.toString() === housingGuests.value;
+    }
+    if (checkedList.length > 0) {
+      let i = 0;
+      while (isFeature && i < checkedList.length) {
+        isFeature = el.offer.features.includes(checkedList[i]);
+        i++;
+      }
+    }
+    return isType && isRooms && isGuest && isFeature && isPrice
+  };
+
+  // проверка
+
+  let ads = adverts.filter(filterAdData);
+
+  ads
+    .slice(0, SIMILAR_ADVERT_COUNT)
+    .forEach((offer) => {
+
+      const iconUsual = L.icon({
+        iconUrl: USAUAL_ICON_DATA.iconUrl,
+        iconSize: USAUAL_ICON_DATA.iconSize,
+        iconAnchor: USAUAL_ICON_DATA.iconAnchor,
+      });
+
+      const marker2 = L.marker(
+        {
+          lat: offer.location.lat,
+          lng: offer.location.lng,
+        },
+        {
+          iconUsual,
+        },
+      );
+
+      marker2.bindPopup(
         createPopup(offer),
       );
-  });
+
+      pins.addLayer(marker2);
+    });
+};
+
+
+
+getData(getUrl, (adverts) => {
+  renderSimilarList(adverts);
+  let setFiter = _.debounce(() => {
+    setFeatures(() => renderSimilarList(adverts));
+  }, RERENDER_DELAY);
+  setFiter();
 });
 
-
-
-const adressCordinate = document.querySelector('#address');
 adressCordinate.value = `${map._lastCenter.lat} , ${map._lastCenter.lng}`;
-
-
 
 marker.on('moveend', (evt) => {
   const move = evt.target.getLatLng();
   const x = move.lng.toFixed(COMMA_NUMBER);
   const y = move.lat.toFixed(COMMA_NUMBER);
-
   adressCordinate.value = `${x} , ${y}`;
 });
 
-const mapValidity = document.querySelector('#map');
-
-mapValidity;
 
 
-
-export { marker, map, LAT, LNG };
+export { marker, map, mapFilter, LAT, LNG, pins };
