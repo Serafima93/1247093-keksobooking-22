@@ -36,7 +36,8 @@ const prorertyDescription = userForm.querySelector('#title');
 const roomNumber = userForm.querySelector('#room_number');
 const guestNumber = userForm.querySelector('#capacity');
 const mainPart = document.querySelector('main');
-const resetButtonSuccess = document.querySelector('.ad-form__reset');
+const resetButtonSuccess = userForm.querySelector('.ad-form__reset');
+const capacityOptions = guestNumber.querySelectorAll('option');
 
 
 
@@ -78,27 +79,29 @@ prorertyDescription.addEventListener('input', () => {
 });
 
 
-guestNumber.addEventListener('change', (evt) => {
-  const userChoice = evt.target.value;
 
-  guestNumber.setCustomValidity('');
+const createCapacity = (clientsAmount) => {
 
-  if (!roomCapacity[roomNumber.value].includes(userChoice)) {
-    guestNumber.setCustomValidity('Количество гостей не может быть больше количества комнат. Количество комнат ограничено!');
-  }
-  guestNumber.reportValidity();
+  capacityOptions.forEach((reservation) => {
+    reservation.disabled = true;
+  });
+
+  roomCapacity[clientsAmount].forEach((placesAmount) => {
+    capacityOptions.forEach((reservation) => {
+      if (reservation.value === placesAmount) {
+        reservation.disabled = false;
+        reservation.selected = true;
+      }
+    });
+  });
+};
+
+roomNumber.addEventListener('change', () => {
+  createCapacity(roomNumber.value);
 });
 
-
-roomNumber.addEventListener('change', (evt) => {
-  const userChoice = evt.target.value;
-
-  roomNumber.setCustomValidity('');
-
-  if (!roomCapacity[userChoice].includes(guestNumber.value)) {
-    roomNumber.setCustomValidity('Количество гостей не может быть больше количества комнат. Количество комнат ограничено!');
-  }
-  roomNumber.reportValidity();
+guestNumber.addEventListener('focus', () => {
+  createCapacity(roomNumber.value);
 });
 
 
