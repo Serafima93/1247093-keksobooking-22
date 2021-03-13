@@ -1,8 +1,10 @@
 'use strict'
 
-import { marker, map, mapFilter, LAT, LNG, pins} from './map.js';
-import { sendData} from './api.js';
+import { startRendering, resetMarkerPosition } from './map.js';
+import { sendData } from './api.js';
 import { avatarPreview, previewflatPhoto } from './avatar.js';
+import { mapFilters } from './filter.js';
+
 
 const PROPERTY_MIN_PRICE =
 {
@@ -11,6 +13,9 @@ const PROPERTY_MIN_PRICE =
   'house': 5000,
   'palace': 10000,
 };
+
+
+
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 
@@ -37,12 +42,11 @@ const resetButtonSuccess = document.querySelector('.ad-form__reset');
 
 
 prorertyType.addEventListener('change', (evt) => {
-
   evt.target.value === prorertyType.value;
   propertyPrice.placeholder = PROPERTY_MIN_PRICE[prorertyType.value];
   propertyPrice.min = PROPERTY_MIN_PRICE[prorertyType.value];
-
 });
+
 
 const makeSameValue = function (first, second) {
   second.value = first.value;
@@ -103,6 +107,8 @@ const templateFormSuccess = document.querySelector('#success')
   .content
   .querySelector('div');
 
+
+
 const successMessage = () => {
   const cardElement = templateFormSuccess.cloneNode(true);
 
@@ -121,17 +127,19 @@ const successMessage = () => {
 
 const resetFunction = function () {
   userForm.reset();
-  mapFilter.reset();
-  marker.setLatLng({ lat: LAT, lng: LNG });
-  map.closePopup();
-  pins.clearLayers();
+  propertyPrice.placeholder = '1000';
+  mapFilters.reset();
+  resetMarkerPosition();
+  startRendering();
   avatarPreview.src = 'img/muffin-grey.svg';
   const newChild = previewflatPhoto.querySelector('.ad-form__photo img');
   if (previewflatPhoto.childNodes.length > 0) { previewflatPhoto.removeChild(newChild); }
 };
 
 
-resetButtonSuccess.addEventListener('click', () => {
+
+resetButtonSuccess.addEventListener('click', (evt) => {
+  evt.preventDefault();
   resetFunction();
 });
 
@@ -144,6 +152,8 @@ const isEscEvent = (evt) => {
 const templateFormError = document.querySelector('#error')
   .content
   .querySelector('div');
+
+
 
 const errorMessage = () => {
   const cardElement = templateFormError.cloneNode(true);
@@ -182,4 +192,3 @@ const setUserFormSubmit = (onSuccess, onFail) => {
 setUserFormSubmit(successMessage, errorMessage);
 
 
-export { resetFunction };

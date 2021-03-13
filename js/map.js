@@ -5,7 +5,7 @@
 
 import { createPopup } from './card.js';
 import { getData } from './api.js';
-import { setFeatures, filterAdData } from './filter.js';
+import { setFeatures, filterAdData, mapFilters } from './filter.js';
 
 const SIMILAR_ADVERT_COUNT = 10;
 const RERENDER_DELAY = 500;
@@ -30,9 +30,9 @@ const adressCordinate = document.querySelector('#address');
 
 const userForm = document.querySelector('.ad-form');
 const fieldsetForm = userForm.querySelectorAll('fieldset');
-const mapFilter = document.querySelector('.map__filters');
-const mapIcons = mapFilter.querySelector('fieldset');
-const mapForms = mapFilter.querySelectorAll('select');
+
+const mapIcons = mapFilters.querySelector('fieldset');
+const mapForms = mapFilters.querySelectorAll('select');
 
 
 
@@ -41,7 +41,7 @@ const makeFormDisabled = function () {
   fieldsetForm.forEach((value) => {
     value.setAttribute('disabled', 'disabled');
   });
-  mapFilter.classList.add('ad-form--disabled');
+  mapFilters.classList.add('ad-form--disabled');
   mapIcons.setAttribute('disabled', 'disabled');
   mapForms.forEach((value) => {
     value.setAttribute('disabled', 'disabled');
@@ -57,7 +57,7 @@ const makeFormActive = function () {
     value.removeAttribute('disabled', 'disabled');
   });
 
-  mapFilter.classList.remove('ad-form--disabled');
+  mapFilters.classList.remove('ad-form--disabled');
   mapIcons.removeAttribute('disabled', 'disabled');
   mapForms.forEach((value) => {
     value.removeAttribute('disabled', 'disabled');
@@ -136,17 +136,21 @@ const renderSimilarList = (adverts) => {
     });
 };
 
+const startRendering = () => {
+  getData(getUrl, (adverts) => {
+    renderSimilarList(adverts);
+    let setFiter = _.debounce(() => {
+      setFeatures(() => renderSimilarList(adverts));
+    }, RERENDER_DELAY);
+    setFiter();
+  })
+};
 
+startRendering();
 
-getData(getUrl, (adverts) => {
-  renderSimilarList(adverts);
-  let setFiter = _.debounce(() => {
-    setFeatures(() => renderSimilarList(adverts));
-  }, RERENDER_DELAY);
-  setFiter();
-});
 
 adressCordinate.value = `${map._lastCenter.lat} , ${map._lastCenter.lng}`;
+
 
 marker.on('moveend', (evt) => {
   const move = evt.target.getLatLng();
@@ -157,4 +161,13 @@ marker.on('moveend', (evt) => {
 
 
 
-export { marker, map, mapFilter, LAT, LNG, pins };
+
+
+const resetMarkerPosition = () => {
+  map.closePopup();
+  pins.clearLayers();
+  marker.setLatLng({ lat: LAT, lng: LNG });
+  adressCordinate.value = `${LAT}, ${LNG}`;
+}
+
+export { pins, startRendering, resetMarkerPosition };

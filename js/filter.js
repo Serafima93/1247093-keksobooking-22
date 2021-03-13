@@ -74,4 +74,4 @@ const filterAdData = function (el) {
 
 
 
-export { setFeatures, filterAdData };
+export { setFeatures, filterAdData, mapFilters };
