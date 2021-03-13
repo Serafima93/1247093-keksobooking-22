@@ -27,14 +27,14 @@ const roomCapacity = {
 };
 const sendUrl = 'https://22.javascript.pages.academy/keksobooking';
 
-const prorertyType = document.querySelector('#type');
-const propertyPrice = document.querySelector('#price');
-const checkIn = document.querySelector('#timein');
-const checkOut = document.querySelector('#timeout');
-const prorertyDescription = document.querySelector('#title');
-const roomNumber = document.querySelector('#room_number');
-const guestNumber = document.querySelector('#capacity');
 const userForm = document.querySelector('.ad-form');
+const prorertyType = userForm.querySelector('#type');
+const propertyPrice = userForm.querySelector('#price');
+const checkIn = userForm.querySelector('#timein');
+const checkOut = userForm.querySelector('#timeout');
+const prorertyDescription = userForm.querySelector('#title');
+const roomNumber = userForm.querySelector('#room_number');
+const guestNumber = userForm.querySelector('#capacity');
 const mainPart = document.querySelector('main');
 const resetButtonSuccess = document.querySelector('.ad-form__reset');
 
