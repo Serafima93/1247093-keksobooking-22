@@ -161,9 +161,8 @@ marker.on('moveend', (evt) => {
 
 
 
-
-
 const resetMarkerPosition = () => {
+  map.setView([LAT, LNG], ZOOM);
   map.closePopup();
   pins.clearLayers();
   marker.setLatLng({ lat: LAT, lng: LNG });

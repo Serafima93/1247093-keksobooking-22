@@ -4,6 +4,8 @@ import { startRendering, resetMarkerPosition } from './map.js';
 import { sendData } from './api.js';
 import { avatarPreview, previewflatPhoto } from './avatar.js';
 import { mapFilters } from './filter.js';
+import { successMessage, errorMessage } from './popups.js';
+
 
 
 const PROPERTY_MIN_PRICE =
@@ -13,8 +15,6 @@ const PROPERTY_MIN_PRICE =
   'house': 5000,
   'palace': 10000,
 };
-
-
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -35,7 +35,6 @@ const checkOut = userForm.querySelector('#timeout');
 const prorertyDescription = userForm.querySelector('#title');
 const roomNumber = userForm.querySelector('#room_number');
 const guestNumber = userForm.querySelector('#capacity');
-const mainPart = document.querySelector('main');
 const resetButtonSuccess = userForm.querySelector('.ad-form__reset');
 const capacityOptions = guestNumber.querySelectorAll('option');
 
@@ -105,29 +104,6 @@ guestNumber.addEventListener('focus', () => {
 });
 
 
-
-const templateFormSuccess = document.querySelector('#success')
-  .content
-  .querySelector('div');
-
-
-
-const successMessage = () => {
-  const cardElement = templateFormSuccess.cloneNode(true);
-
-  mainPart.append(cardElement);
-
-  document.addEventListener('keydown', () => {
-    if (isEscEvent) {
-      cardElement.remove();
-    }
-  });
-  document.addEventListener('click', () => {
-    cardElement.remove();
-  });
-}
-
-
 const resetFunction = function () {
   userForm.reset();
   propertyPrice.placeholder = '1000';
@@ -145,38 +121,6 @@ resetButtonSuccess.addEventListener('click', (evt) => {
   evt.preventDefault();
   resetFunction();
 });
-
-
-
-const isEscEvent = (evt) => {
-  return evt.key === 'Escape' || evt.key === 'Esc';
-};
-
-const templateFormError = document.querySelector('#error')
-  .content
-  .querySelector('div');
-
-
-
-const errorMessage = () => {
-  const cardElement = templateFormError.cloneNode(true);
-  mainPart.append(cardElement);
-  const errorButton = cardElement.querySelector('.error__button');
-
-  errorButton.addEventListener('click', () => {
-    cardElement.remove();
-  });
-  document.addEventListener('keydown', () => {
-    if (isEscEvent) {
-      cardElement.remove();
-    }
-  });
-  document.addEventListener('click', () => {
-    cardElement.remove();
-  });
-}
-
-
 
 
 const setUserFormSubmit = (onSuccess, onFail) => {
