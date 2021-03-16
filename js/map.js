@@ -5,7 +5,7 @@
 
 import { createPopup } from './card.js';
 import { getData } from './api.js';
-import { setFeatures, filterAdData, mapFilters } from './filter.js';
+import { setFeatures, createFilterAdData, mapFilters } from './filter.js';
 
 const SIMILAR_ADVERT_COUNT = 10;
 const RERENDER_DELAY = 500;
@@ -106,7 +106,7 @@ pins
 
 const renderSimilarList = (adverts) => {
 
-  let ads = adverts.filter(filterAdData);
+  let ads = adverts.filter(createFilterAdData);
 
   ads
     .slice(0, SIMILAR_ADVERT_COUNT)

@@ -4,7 +4,7 @@ import { startRendering, resetMarkerPosition } from './map.js';
 import { sendData } from './api.js';
 import { avatarPreview, previewflatPhoto } from './avatar.js';
 import { mapFilters } from './filter.js';
-import { successMessage, errorMessage } from './popups.js';
+import { showSuccessMessage, showErrorMessage } from './popups.js';
 
 
 
@@ -136,6 +136,6 @@ const setUserFormSubmit = (onSuccess, onFail) => {
   });
 };
 
-setUserFormSubmit(successMessage, errorMessage);
+setUserFormSubmit(showSuccessMessage, showErrorMessage);
 
 

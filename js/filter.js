@@ -32,7 +32,7 @@ const setFeatures = (cb) => {
   });
 };
 
-const filterAdData = function (el) {
+const createFilterAdData = function (el) {
   let isType = true;
   let isPrice = true;
   let isGuest = true;
@@ -74,4 +74,4 @@ const filterAdData = function (el) {
 
 
 
-export { setFeatures, filterAdData, mapFilters };
+export { setFeatures, createFilterAdData, mapFilters };

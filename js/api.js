@@ -23,11 +23,12 @@ const sendData = (URL, onSuccess, onFail, body) => {
     },
   )
     .then((response) => {
-      if (response.ok) {
-        onSuccess();
-      } else {
-        onFail();
-      }
+      // if (response.ok) {
+      //   onSuccess();
+      // } else {
+      //   onFail();
+      // }
+      (response.ok) ? onSuccess() : onFail();
     })
     .catch(() => {
       onFail();

@@ -7,7 +7,7 @@ const templateFormSuccess = document.querySelector('#success')
   .querySelector('div');
 
 
-const successMessage = () => {
+const showSuccessMessage = () => {
   const cardElement = templateFormSuccess.cloneNode(true);
 
   mainPart.append(cardElement);
@@ -32,7 +32,7 @@ const templateFormError = document.querySelector('#error')
   .querySelector('div');
 
 
-const errorMessage = () => {
+const showErrorMessage = () => {
   const cardElement = templateFormError.cloneNode(true);
   mainPart.append(cardElement);
   const errorButton = cardElement.querySelector('.error__button');
@@ -50,4 +50,4 @@ const errorMessage = () => {
   });
 }
 
-export { successMessage, errorMessage };
+export { showSuccessMessage, showErrorMessage };
