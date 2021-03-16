@@ -8,16 +8,13 @@ const PROPERTY_TYPE = {
 }
 
 const templateFragment = document.querySelector('#card')
-  .content // Находим фрагмент с содержимым темплейта
-  .querySelector('article'); // В фрагменте находим нужный элемент
+  .content
+  .querySelector('article');
 
-// делаю карточку по шаблону
 
 const createPopup = (offer) => {
 
   const cardElement = templateFragment.cloneNode(true);
-
-  //заголовок
 
   const titlePopup = cardElement.querySelector('.popup__title');
   titlePopup.textContent = offer.offer.title;
@@ -25,23 +22,17 @@ const createPopup = (offer) => {
     titlePopup.remove();
   }
 
-  //адрес
-
   const adressPopup = cardElement.querySelector('.popup__text--address');
   adressPopup.textContent = `${offer.offer.address.lat} это X ${offer.offer.address.lng} это Y`;
   if (!offer.offer.address.lat || !offer.offer.address.lng) {
     adressPopup.remove();
   }
 
-  //цена
-
   const pricePopup = cardElement.querySelector('.popup__text--price');
   pricePopup.textContent = `${offer.offer.price} ₽/ночь`;
   if (!offer.offer.price) {
     pricePopup.remove();
   }
-
-  //тип жилья
 
   const typePopup = cardElement.querySelector('.popup__type');
   typePopup.textContent = PROPERTY_TYPE[offer.offer.type];
@@ -50,16 +41,11 @@ const createPopup = (offer) => {
     typePopup.remove();
   }
 
-
-  //комнаты и гости
-
   const capacityPopup = cardElement.querySelector('.popup__text--capacity');
   capacityPopup.textContent = `${offer.offer.rooms} комнаты для ${offer.offer.guests} гостей`;
   if (!offer.offer.rooms || !offer.offer.guests) {
     capacityPopup.remove();
   }
-
-  //заезд и выезд
 
   const timePopup = cardElement.querySelector('.popup__text--time');
   timePopup.textContent = `Заезд после ${offer.offer.checkin}  выезд до ${offer.offer.checkout}`;
@@ -67,24 +53,20 @@ const createPopup = (offer) => {
     timePopup.remove();
   }
 
-  //удобства
-
-  const featuresPopup = cardElement.querySelector('.popup__features');// ищем родительскй элемент
-  featuresPopup.innerHTML = ''; //очищаем его
-  const featuresArray = offer.offer.features; //ищем массив данных
+  const featuresPopup = cardElement.querySelector('.popup__features');
+  featuresPopup.innerHTML = '';
+  const featuresArray = offer.offer.features;
 
   for (let i = 0; i <= featuresArray.length - 1; i++) {
     const ad = featuresArray[i];
-    const newElement = document.createElement('li'); // создаем новый элемент
-    newElement.classList.add('popup__feature', `popup__feature--${ad}`); //добавляем ему класс второй
-    featuresPopup.append(newElement); // добавляем его в список
+    const newElement = document.createElement('li');
+    newElement.classList.add('popup__feature', `popup__feature--${ad}`);
+    featuresPopup.append(newElement);
   }
 
   if (!offer.offer.features) {
     featuresPopup.remove();
   }
-
-  //описание жилья
 
   const descriptionPopup = cardElement.querySelector('.popup__description');
   descriptionPopup.textContent = offer.offer.description;
@@ -92,11 +74,8 @@ const createPopup = (offer) => {
     descriptionPopup.remove();
   }
 
-  //фото жилья
-
   const photosPopup = cardElement.querySelector('.popup__photos');
   const photoPopup = cardElement.querySelector('.popup__photo');
-
 
   photosPopup.innerHTML = '';
   const photosArray = offer.offer.photos;
@@ -110,8 +89,6 @@ const createPopup = (offer) => {
   if (!offer.offer.photos) {
     photosPopup.remove();
   }
-
-  //аватар пользователя
 
   const avatarPopup = cardElement.querySelector('.popup__avatar');
   avatarPopup.src = offer.author.avatar;

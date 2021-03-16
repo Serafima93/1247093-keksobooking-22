@@ -5,11 +5,11 @@
 
 import { createPopup } from './card.js';
 import { getData } from './api.js';
+import { setFeatures, filterAdData, mapFilters } from './filter.js';
 
-const ANY = 'any';
 const SIMILAR_ADVERT_COUNT = 10;
 const RERENDER_DELAY = 500;
-const ZOOM = 12;
+const ZOOM = 9;
 const LAT = 35.65;
 const LNG = 139.78;
 const MAIN_ICON_DATA = {
@@ -23,34 +23,16 @@ const USAUAL_ICON_DATA = {
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 };
-
 const COMMA_NUMBER = 5;
-
-const priceValues = {
-  START: 10000,
-  FINAL: 50000,
-};
-
-const mapFilters = document.querySelector('.map__filters');
-const housingType = mapFilters.querySelector('#housing-type');
-const housingRooms = mapFilters.querySelector('#housing-rooms');
-const housingGuests = mapFilters.querySelector('#housing-guests');
-const housingPrice = mapFilters.querySelector('#housing-price');
-
-
-
-
 
 const getUrl = 'https://22.javascript.pages.academy/keksobooking/data';
 const adressCordinate = document.querySelector('#address');
 
-// находим форму и добавляем неактивность
 const userForm = document.querySelector('.ad-form');
 const fieldsetForm = userForm.querySelectorAll('fieldset');
-// находим форму карты и добавляем неактивность.
-const mapFilter = document.querySelector('.map__filters');
-const mapIcons = mapFilter.querySelector('fieldset');
-const mapForms = mapFilter.querySelectorAll('select');
+
+const mapIcons = mapFilters.querySelector('fieldset');
+const mapForms = mapFilters.querySelectorAll('select');
 
 
 
@@ -59,7 +41,7 @@ const makeFormDisabled = function () {
   fieldsetForm.forEach((value) => {
     value.setAttribute('disabled', 'disabled');
   });
-  mapFilter.classList.add('ad-form--disabled');
+  mapFilters.classList.add('ad-form--disabled');
   mapIcons.setAttribute('disabled', 'disabled');
   mapForms.forEach((value) => {
     value.setAttribute('disabled', 'disabled');
@@ -75,7 +57,7 @@ const makeFormActive = function () {
     value.removeAttribute('disabled', 'disabled');
   });
 
-  mapFilter.classList.remove('ad-form--disabled');
+  mapFilters.classList.remove('ad-form--disabled');
   mapIcons.removeAttribute('disabled', 'disabled');
   mapForms.forEach((value) => {
     value.removeAttribute('disabled', 'disabled');
@@ -84,15 +66,9 @@ const makeFormActive = function () {
 
 
 
-
-// работа с картой
-
 const map = L.map('map')
   .on('load', () => {
-    //Карта инициализирована. Возвращение атрибутов
-
     makeFormActive();
-
   })
   .setView([LAT, LNG], ZOOM);
 
@@ -123,76 +99,12 @@ const marker = L.marker(
 marker.addTo(map);
 
 
-// создаем группу слоев - пока пустую
 const pins = L.layerGroup([]);
-pins // добавляем его на карту
+pins
   .addTo(map);
 
 
-const createFeaturesArray = function () {
-  const housingFeaturesChecked = mapFilters.querySelectorAll('.map__features input[name="features"]:checked');
-  const checkedFeatures = Array.from(housingFeaturesChecked);
-  const featuresCheckedArray = [];
-  for (let i = 0; i <= checkedFeatures.length - 1; i++) {
-    const ad = checkedFeatures[i].value;
-    featuresCheckedArray.push(ad);
-  }
-  return featuresCheckedArray
-};
-
-
-
-const setFeatures = (cb) => {
-  mapFilters.addEventListener('change', () => {
-    pins.clearLayers();
-    cb();
-  });
-};
-
-
 const renderSimilarList = (adverts) => {
-
-  const filterAdData = function (el) {
-    let isType = true;
-    let isPrice = true;
-    let isGuest = true;
-    let isRooms = true;
-    let isFeature = true;
-    const priceLimit = {
-      middle: el.offer.price >= priceValues.START && el.offer.price <= priceValues.FINAL,
-      low: el.offer.price < priceValues.START,
-      high: el.offer.price >= priceValues.FINAL,
-    };
-    const checkedList = createFeaturesArray(); // получаем массив выделеных фичей
-
-
-    if (housingType.value !== ANY) {
-      isType = el.offer.type === housingType.value;
-    }
-    if (housingRooms.value !== ANY) {
-      isRooms = el.offer.rooms.toString() === housingRooms.value;
-    }
-    if (housingGuests.value !== ANY) {
-      isGuest = el.offer.guests.toString() === housingGuests.value;
-    }
-    if (housingPrice.value !== ANY) {
-      isPrice = el.offer.price === priceLimit[housingPrice.value];
-      isPrice = priceLimit[housingPrice.value];
-    }
-    if (housingGuests.value !== ANY) {
-      isGuest = el.offer.guests.toString() === housingGuests.value;
-    }
-    if (checkedList.length > 0) {
-      let i = 0;
-      while (isFeature && i < checkedList.length) {
-        isFeature = el.offer.features.includes(checkedList[i]);
-        i++;
-      }
-    }
-    return isType && isRooms && isGuest && isFeature && isPrice
-  };
-
-  // проверка
 
   let ads = adverts.filter(filterAdData);
 
@@ -224,17 +136,21 @@ const renderSimilarList = (adverts) => {
     });
 };
 
+const startRendering = () => {
+  getData(getUrl, (adverts) => {
+    renderSimilarList(adverts);
+    let setFiter = _.debounce(() => {
+      setFeatures(() => renderSimilarList(adverts));
+    }, RERENDER_DELAY);
+    setFiter();
+  })
+};
 
+startRendering();
 
-getData(getUrl, (adverts) => {
-  renderSimilarList(adverts);
-  let setFiter = _.debounce(() => {
-    setFeatures(() => renderSimilarList(adverts));
-  }, RERENDER_DELAY);
-  setFiter();
-});
 
 adressCordinate.value = `${map._lastCenter.lat} , ${map._lastCenter.lng}`;
+
 
 marker.on('moveend', (evt) => {
   const move = evt.target.getLatLng();
@@ -245,4 +161,12 @@ marker.on('moveend', (evt) => {
 
 
 
-export { marker, map, mapFilter, LAT, LNG, pins };
+const resetMarkerPosition = () => {
+  map.setView([LAT, LNG], ZOOM);
+  map.closePopup();
+  pins.clearLayers();
+  marker.setLatLng({ lat: LAT, lng: LNG });
+  adressCordinate.value = `${LAT}, ${LNG}`;
+}
+
+export { pins, startRendering, resetMarkerPosition };

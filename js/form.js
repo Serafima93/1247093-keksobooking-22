@@ -1,8 +1,12 @@
 'use strict'
 
-import { marker, map, mapFilter, LAT, LNG, pins} from './map.js';
-import { sendData} from './api.js';
+import { startRendering, resetMarkerPosition } from './map.js';
+import { sendData } from './api.js';
 import { avatarPreview, previewflatPhoto } from './avatar.js';
+import { mapFilters } from './filter.js';
+import { successMessage, errorMessage } from './popups.js';
+
+
 
 const PROPERTY_MIN_PRICE =
 {
@@ -11,6 +15,7 @@ const PROPERTY_MIN_PRICE =
   'house': 5000,
   'palace': 10000,
 };
+
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 
@@ -22,29 +27,26 @@ const roomCapacity = {
 };
 const sendUrl = 'https://22.javascript.pages.academy/keksobooking';
 
-const prorertyType = document.querySelector('#type');
-const propertyPrice = document.querySelector('#price');
-// Выбор времени регистрации
-const checkIn = document.querySelector('#timein');
-const checkOut = document.querySelector('#timeout');
-const prorertyDescription = document.querySelector('#title');
-const roomNumber = document.querySelector('#room_number');
-const guestNumber = document.querySelector('#capacity');
-// начало работы с формой
 const userForm = document.querySelector('.ad-form');
-const mainPart = document.querySelector('main');
-const resetButtonSuccess = document.querySelector('.ad-form__reset');
+const prorertyType = userForm.querySelector('#type');
+const propertyPrice = userForm.querySelector('#price');
+const checkIn = userForm.querySelector('#timein');
+const checkOut = userForm.querySelector('#timeout');
+const prorertyDescription = userForm.querySelector('#title');
+const roomNumber = userForm.querySelector('#room_number');
+const guestNumber = userForm.querySelector('#capacity');
+const resetButtonSuccess = userForm.querySelector('.ad-form__reset');
+const capacityOptions = guestNumber.querySelectorAll('option');
 
 
 
 
 prorertyType.addEventListener('change', (evt) => {
-
   evt.target.value === prorertyType.value;
   propertyPrice.placeholder = PROPERTY_MIN_PRICE[prorertyType.value];
   propertyPrice.min = PROPERTY_MIN_PRICE[prorertyType.value];
-
 });
+
 
 const makeSameValue = function (first, second) {
   second.value = first.value;
@@ -59,7 +61,6 @@ checkIn.addEventListener('change', () => {
 });
 
 
-// Поле описания
 
 prorertyDescription.addEventListener('input', () => {
   const valueLength = prorertyDescription.value.length;
@@ -76,107 +77,50 @@ prorertyDescription.addEventListener('input', () => {
   prorertyDescription.reportValidity();
 });
 
-// Поле комнат
 
-guestNumber.addEventListener('change', (evt) => {
-  const userChoice = evt.target.value;
 
-  guestNumber.setCustomValidity('');
+const createCapacity = (clientsAmount) => {
 
-  if (!roomCapacity[roomNumber.value].includes(userChoice)) {
-    guestNumber.setCustomValidity('Количество гостей не может быть больше количества комнат. Количество комнат ограничено!');
-  }
-  guestNumber.reportValidity();
+  capacityOptions.forEach((reservation) => {
+    reservation.disabled = true;
+  });
+
+  roomCapacity[clientsAmount].forEach((placesAmount) => {
+    capacityOptions.forEach((reservation) => {
+      if (reservation.value === placesAmount) {
+        reservation.disabled = false;
+        reservation.selected = true;
+      }
+    });
+  });
+};
+
+roomNumber.addEventListener('change', () => {
+  createCapacity(roomNumber.value);
 });
 
-
-roomNumber.addEventListener('change', (evt) => {
-  const userChoice = evt.target.value;
-
-  roomNumber.setCustomValidity('');
-
-  if (!roomCapacity[userChoice].includes(guestNumber.value)) {
-    roomNumber.setCustomValidity('Количество гостей не может быть больше количества комнат. Количество комнат ограничено!');
-  }
-  roomNumber.reportValidity();
+guestNumber.addEventListener('focus', () => {
+  createCapacity(roomNumber.value);
 });
 
-
-// поп-ап успешной отправки
-
-const templateFormSuccess = document.querySelector('#success')
-  .content
-  .querySelector('div');
-
-const successMessage = () => {
-  const cardElement = templateFormSuccess.cloneNode(true);
-
-  mainPart.append(cardElement);
-
-  document.addEventListener('keydown', () => {
-    if (isEscEvent) {
-      cardElement.remove();
-    }
-  });
-  document.addEventListener('click', () => {
-    cardElement.remove();
-  });
-}
-
-// сброс настроек в исходное состояние
-// Возврат баллуна и попапа на место
 
 const resetFunction = function () {
   userForm.reset();
-  mapFilter.reset();
-  marker.setLatLng({ lat: LAT, lng: LNG });
-  map.closePopup();
-  pins.clearLayers();
+  propertyPrice.placeholder = '1000';
+  mapFilters.reset();
+  resetMarkerPosition();
+  startRendering();
   avatarPreview.src = 'img/muffin-grey.svg';
   const newChild = previewflatPhoto.querySelector('.ad-form__photo img');
   if (previewflatPhoto.childNodes.length > 0) { previewflatPhoto.removeChild(newChild); }
 };
 
 
-resetButtonSuccess.addEventListener('click', () => {
+
+resetButtonSuccess.addEventListener('click', (evt) => {
+  evt.preventDefault();
   resetFunction();
 });
-
-
-
-// поп-ап ошибки
-
-const isEscEvent = (evt) => {
-  return evt.key === 'Escape' || evt.key === 'Esc';
-};
-
-const templateFormError = document.querySelector('#error')
-  .content
-  .querySelector('div');
-
-const errorMessage = () => {
-  const cardElement = templateFormError.cloneNode(true);
-  mainPart.append(cardElement);
-
-  // закрытие сообщения об ошибке
-
-  const errorButton = cardElement.querySelector('.error__button');
-
-  errorButton.addEventListener('click', () => {
-    cardElement.remove();
-  });
-  document.addEventListener('keydown', () => {
-    if (isEscEvent) {
-      cardElement.remove();
-    }
-  });
-  document.addEventListener('click', () => {
-    cardElement.remove();
-  });
-}
-
-
-// отправка формы
 
 
 const setUserFormSubmit = (onSuccess, onFail) => {
@@ -195,4 +139,3 @@ const setUserFormSubmit = (onSuccess, onFail) => {
 setUserFormSubmit(successMessage, errorMessage);
 
 
-export { resetFunction };
