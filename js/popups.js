@@ -2,6 +2,13 @@
 
 const mainPart = document.querySelector('main');
 
+const removeModalPopUp = (element, deleteFunction) => {
+  element.remove();
+  document.removeEventListener('keydown', deleteFunction);
+  document.removeEventListener('click', deleteFunction);
+};
+
+
 const templateFormSuccess = document.querySelector('#success')
   .content
   .querySelector('div');
@@ -14,11 +21,11 @@ const showSuccessMessage = () => {
 
   document.addEventListener('keydown', () => {
     if (isEscEvent) {
-      cardElement.remove();
+      removeModalPopUp(cardElement, showSuccessMessage);
     }
   });
   document.addEventListener('click', () => {
-    cardElement.remove();
+    removeModalPopUp(cardElement, showSuccessMessage);
   });
 }
 
@@ -38,16 +45,21 @@ const showErrorMessage = () => {
   const errorButton = cardElement.querySelector('.error__button');
 
   errorButton.addEventListener('click', () => {
-    cardElement.remove();
+    removeModalPopUp(cardElement, showErrorMessage);
+
   });
   document.addEventListener('keydown', () => {
     if (isEscEvent) {
-      cardElement.remove();
+      removeModalPopUp(cardElement, showErrorMessage);
+
     }
   });
   document.addEventListener('click', () => {
-    cardElement.remove();
+    removeModalPopUp(cardElement, showErrorMessage);
+
   });
 }
+
+
 
 export { showSuccessMessage, showErrorMessage };
